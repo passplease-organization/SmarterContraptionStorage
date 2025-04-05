@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.smartercontraptionstorage.Mixin",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "Contraption.ContraptionControlBlockMixin",
+    "Contraption.ContraptionControlsBlockEntityMixin",
+    "Contraption.ContraptionMixin",
+    "Contraption.MountedStorageManagerMixin",
+    "Storage.MountedFluidStorageMixin"
+  ],
+  "client": [
+    "Render.RenderMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
