@@ -2,9 +2,7 @@ package net.smartercontraptionstorage.AddStorage.GUI.NormalMenu;
 
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.client.gui.StorageGuiGraphics;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -12,11 +10,11 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
 public class MovingDrawerScreen extends AbstractMovingScreen<MovingDrawerMenu>{
-    public static final ResourceLocation BACKGROUND_1 = new ResourceLocation(StorageDrawers.MOD_ID,"textures/gui/drawers_1.png");
+    public static final ResourceLocation BACKGROUND_1 = ResourceLocation.fromNamespaceAndPath(StorageDrawers.MOD_ID,"textures/gui/drawers_1.png");
 
-    public static final ResourceLocation BACKGROUND_2 = new ResourceLocation(StorageDrawers.MOD_ID,"textures/gui/drawers_2.png");
+    public static final ResourceLocation BACKGROUND_2 = ResourceLocation.fromNamespaceAndPath(StorageDrawers.MOD_ID,"textures/gui/drawers_2.png");
 
-    public static final ResourceLocation BACKGROUND_4 = new ResourceLocation(StorageDrawers.MOD_ID,"textures/gui/drawers_4.png");
+    public static final ResourceLocation BACKGROUND_4 = ResourceLocation.fromNamespaceAndPath(StorageDrawers.MOD_ID,"textures/gui/drawers_4.png");
 
     protected static StorageGuiGraphics storageGuiGraphics;
     

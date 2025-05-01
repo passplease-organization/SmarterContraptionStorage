@@ -1,6 +1,6 @@
 package net.smartercontraptionstorage.Mixin.Storage;
 
-import com.simibubi.create.content.contraptions.MountedFluidStorage;
+import com.simibubi.create.api.contraption.storage.fluid.MountedFluidStorage;
 import com.simibubi.create.foundation.fluid.SmartFluidTank;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -23,107 +23,52 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(MountedFluidStorage.class)
-public class MountedFluidStorageMixin implements Changeable {
-    @Shadow(remap = false)
-    SmartFluidTank tank;
-    @Shadow(remap = false) private boolean valid;
-    @Shadow(remap = false) private boolean sendPacket;
-    @Shadow(remap = false) private BlockEntity blockEntity;
+public class MountedFluidStorageMixin{
     @Unique @Nullable
     FluidHandlerHelper smarterContraptionStorage$handlerHelper;
-    @Inject(method = "canUseAsStorage",at = @At("RETURN"),remap = false, cancellable = true)
-    private static void canUseAsStorage(BlockEntity be, CallbackInfoReturnable<Boolean> cir){
-        if(!cir.getReturnValue())
-            cir.setReturnValue(FluidHandlerHelper.canUseAsStorage(be));
-    }
-    @Inject(method = "createMountedTank",at = @At("RETURN"),remap = false, cancellable = true)
-    public void createMountedTank(BlockEntity be, CallbackInfoReturnable<SmartFluidTank> cir){
-        if(cir.getReturnValue() == null){
-            smarterContraptionStorage$handlerHelper = FluidHandlerHelper.findSuitableHelper(be);
-            if (smarterContraptionStorage$handlerHelper != null) {
-                SmartFluidTank tank = smarterContraptionStorage$handlerHelper.createHandler(be);
-                cir.setReturnValue(tank);
-            }
-        }
-    }
-    @Inject(method = "removeStorageFromWorld",at = @At("RETURN"),remap = false)
-    public void removeStorageFromWorld(CallbackInfo ci){
-        if(!valid && smarterContraptionStorage$handlerHelper != null){
-            valid = true;
-            sendPacket = smarterContraptionStorage$handlerHelper.sendPacket();
-            if(tank instanceof NeedDealWith)
-                ((NeedDealWith) tank).doSomething(blockEntity);
-            else if(smarterContraptionStorage$handlerHelper instanceof NeedDealWith)
-                ((NeedDealWith)smarterContraptionStorage$handlerHelper).doSomething(blockEntity);
-        }
-    }
-    @Inject(method = "addStorageToWorld",at = @At("HEAD"),remap = false,cancellable = true)
-    public void addStorageToWorld(BlockEntity be, CallbackInfo ci){
-        if(smarterContraptionStorage$handlerHelper != null) {
-            smarterContraptionStorage$handlerHelper.addStorageToWorld(be,tank);
-            ci.cancel();
-        }
-    }
-    @Inject(method = "tick",at = @At("RETURN"),remap = false)
-    public void tick(Entity entity, BlockPos pos, boolean isRemote, CallbackInfo ci){
-        if(smarterContraptionStorage$handlerHelper != null)
-            smarterContraptionStorage$handlerHelper.tick(entity,pos,isRemote);
-    }
-    @Inject(method = "serialize",at = @At("RETURN"),remap = false,cancellable = true)
-    public void serialize(CallbackInfoReturnable<CompoundTag> cir){
-        if(smarterContraptionStorage$handlerHelper != null){
-            CompoundTag tag = cir.getReturnValue();
-            if(tag == null)
-                return;
-            tag.putString(FluidHandlerHelper.DESERIALIZE_MARKER,smarterContraptionStorage$handlerHelper.getName());
-            if(!smarterContraptionStorage$handlerHelper.canDeserialize()){
-                smarterContraptionStorage$handlerHelper.addStorageToWorld(blockEntity,tank);
-            }
-            cir.setReturnValue(tag);
-        }
-    }
-    @Inject(method = "deserialize",at = @At("HEAD"),remap = false,cancellable = true)
-    private static void deserialize(CompoundTag nbt, CallbackInfoReturnable<MountedFluidStorage> cir){
-        if(nbt.contains(FluidHandlerHelper.DESERIALIZE_MARKER)){
-            FluidHandlerHelper helper = null;
-            try{
-                MountedFluidStorage storage = new MountedFluidStorage(null);
-                helper = FluidHandlerHelper.findByName(nbt.getString(FluidHandlerHelper.DESERIALIZE_MARKER));
-                if(helper.canDeserialize()) {
-                    ((Settable) storage).set(helper.deserialize(nbt));
-                } else {
-                    BlockPos localPos = NbtUtils.readBlockPos(nbt.getCompound("LocalPos"));
-                    BlockEntity blockEntity = FunctionChanger.getBlockEntity.apply(localPos);
-                    if(helper.canCreateHandler(blockEntity)) {
-                        helper.createHandler(blockEntity);
-                        ((Settable) storage).set(blockEntity);
-                    }
-                }
-                ((Settable)storage).set(helper,true);
-                cir.setReturnValue(storage);
-            } catch (Exception e) {
-                Utils.addError("Illegal state! Unchecked deserialize try!");
-                Utils.addWarning((helper == null ? "Unknown fluid handler" : helper.getName()) + "can't deserialize !");
-            }
-        }
-    }
-
-    @Override
-    public void set(Object object) {
-        if(object instanceof SmartFluidTank)
-            this.tank = (SmartFluidTank) object;
-        else if(object instanceof Boolean)
-            this.valid = (boolean) object;
-        else if(object instanceof FluidHandlerHelper)
-            this.smarterContraptionStorage$handlerHelper = (FluidHandlerHelper) object;
-        else if(object instanceof BlockEntity)
-            this.blockEntity = (BlockEntity) object;
-    }
-
-    @Override
-    public @Nullable Object get(String name) {
-        if(name.equals("helper"))
-            return this.smarterContraptionStorage$handlerHelper;
-        return null;
-    }
+    // TODO tick方法
+//    @Inject(method = "tick",at = @At("RETURN"),remap = false)
+//    public void tick(Entity entity, BlockPos pos, boolean isRemote, CallbackInfo ci){
+//        if(smarterContraptionStorage$handlerHelper != null)
+//            smarterContraptionStorage$handlerHelper.tick(entity,pos,isRemote);
+//    }
+    // TODO NBT相关
+//    @Inject(method = "serialize",at = @At("RETURN"),remap = false,cancellable = true)
+//    public void serialize(CallbackInfoReturnable<CompoundTag> cir){
+//        if(smarterContraptionStorage$handlerHelper != null){
+//            CompoundTag tag = cir.getReturnValue();
+//            if(tag == null)
+//                return;
+//            tag.putString(FluidHandlerHelper.DESERIALIZE_MARKER,smarterContraptionStorage$handlerHelper.getName());
+//            if(!smarterContraptionStorage$handlerHelper.canDeserialize()){
+//                smarterContraptionStorage$handlerHelper.addStorageToWorld(blockEntity,tank);
+//            }
+//            cir.setReturnValue(tag);
+//        }
+//    }
+//    @Inject(method = "deserialize",at = @At("HEAD"),remap = false,cancellable = true)
+//    private static void deserialize(CompoundTag nbt, CallbackInfoReturnable<MountedFluidStorage> cir){
+//        if(nbt.contains(FluidHandlerHelper.DESERIALIZE_MARKER)){
+//            FluidHandlerHelper helper = null;
+//            try{
+//                MountedFluidStorage storage = new MountedFluidStorage(null);
+//                helper = FluidHandlerHelper.findByName(nbt.getString(FluidHandlerHelper.DESERIALIZE_MARKER));
+//                if(helper.canDeserialize()) {
+//                    ((Settable) storage).set(helper.deserialize(nbt));
+//                } else {
+//                    BlockPos localPos = NbtUtils.readBlockPos(nbt.getCompound("LocalPos"));
+//                    BlockEntity blockEntity = FunctionChanger.getBlockEntity.apply(localPos);
+//                    if(helper.canCreateHandler(blockEntity)) {
+//                        helper.createHandler(blockEntity);
+//                        ((Settable) storage).set(blockEntity);
+//                    }
+//                }
+//                ((Settable)storage).set(helper,true);
+//                cir.setReturnValue(storage);
+//            } catch (Exception e) {
+//                Utils.addError("Illegal state! Unchecked deserialize try!");
+//                Utils.addWarning((helper == null ? "Unknown fluid handler" : helper.getName()) + "can't deserialize !");
+//            }
+//        }
+//    }
 }

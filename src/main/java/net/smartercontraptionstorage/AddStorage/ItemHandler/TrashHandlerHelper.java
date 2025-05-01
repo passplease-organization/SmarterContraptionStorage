@@ -1,8 +1,8 @@
 package net.smartercontraptionstorage.AddStorage.ItemHandler;
 
 import com.simibubi.create.content.equipment.toolbox.ToolboxBlockEntity;
-import com.simibubi.create.foundation.utility.NBTHelper;
 import com.supermartijn642.trashcans.TrashCanBlockEntity;
+import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;

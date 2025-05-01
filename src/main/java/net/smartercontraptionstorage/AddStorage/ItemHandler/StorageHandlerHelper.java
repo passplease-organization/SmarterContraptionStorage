@@ -1,7 +1,7 @@
 package net.smartercontraptionstorage.AddStorage.ItemHandler;
 
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
-import com.simibubi.create.foundation.utility.NBTHelper;
+import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
@@ -49,7 +49,8 @@ public abstract class StorageHandlerHelper implements SerializableHandler<ItemSt
         BlockEntityList.clear();
     }
     public static void register(@NotNull StorageHandlerHelper helper){
-        HandlerHelpers.add(helper);
+        if(HandlerHelpers.stream().noneMatch(h -> h.getClass() == helper.getClass()))
+            HandlerHelpers.add(helper);
     }
     public static boolean canControl(@Nullable Item comparedItem){
         return canControl(comparedItem,Block.byItem(comparedItem));
@@ -57,14 +58,14 @@ public abstract class StorageHandlerHelper implements SerializableHandler<ItemSt
     public static boolean canControl(@NotNull Block comparedBlock){
         return canControl(comparedBlock.asItem(),comparedBlock);
     }
-    private static boolean canControl(@Nullable Item comparedItem,@Nullable Block comparedBlock){
-        if(comparedItem == null || comparedBlock == null)
-            return false;
-        for (StorageHandlerHelper handlerHelper : HandlerHelpers) {
-            if (handlerHelper.allowControl(comparedItem))
-                return true;
+    public static boolean canControl(@Nullable Item comparedItem,@Nullable Block comparedBlock){
+        if(comparedItem != null) {
+            for (StorageHandlerHelper handlerHelper : HandlerHelpers) {
+                if (handlerHelper.allowControl(comparedItem))
+                    return true;
+            }
         }
-        if(comparedBlock == Blocks.AIR)
+        if(comparedBlock == Blocks.AIR || comparedBlock == null)
             return false;
         for (StorageHandlerHelper handlerHelper : HandlerHelpers){
             if( handlerHelper.allowControl(comparedBlock))
@@ -111,14 +112,21 @@ public abstract class StorageHandlerHelper implements SerializableHandler<ItemSt
         }
         protected HandlerHelper(CompoundTag nbt){
             super(nbt.getInt("size"));
-            ListTag list_slotLimits = nbt.getList("slotLimits", Tag.TAG_INT);
             List<ItemStack> list_items = NBTHelper.readItemList(nbt.getList("items", Tag.TAG_COMPOUND));
             int size = list_items.size();
-            slotLimits = new int[size];
             items = new ItemStack[size];
-            for (int slot = 0; slot < size; slot++) {
-                slotLimits[slot] = list_slotLimits.getInt(slot);
-                items[slot] = list_items.get(slot);
+            ListTag list_slotLimits = nbt.getList("slotLimits", Tag.TAG_INT);
+            if(!list_slotLimits.isEmpty()) {
+                slotLimits = new int[size];
+                for (int slot = 0; slot < size; slot++) {
+                    slotLimits[slot] = list_slotLimits.getInt(slot);
+                    items[slot] = list_items.get(slot);
+                }
+            }else {
+                slotLimits = nbt.getIntArray("slotLimits");
+                for (int slot = 0; slot < size; slot++) {
+                    items[slot] = list_items.get(slot);
+                }
             }
         }
         @Override

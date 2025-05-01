@@ -3,7 +3,7 @@ package net.smartercontraptionstorage.AddStorage.ItemHandler;
 import com.buuz135.functionalstorage.block.DrawerBlock;
 import com.buuz135.functionalstorage.block.tile.DrawerTile;
 import com.buuz135.functionalstorage.inventory.BigInventoryHandler;
-import com.simibubi.create.foundation.utility.NBTHelper;
+import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
@@ -118,9 +118,13 @@ public class FunctionalDrawersHandlerHelper extends StorageHandlerHelper{
             isCreative = nbt.getBoolean("isCreative");
             isVoid = nbt.getBoolean("isVoid");
             ListTag list = nbt.getList("count", Tag.TAG_INT);
-            count = new int[list.size()];
-            for (int slot = 0; slot < count.length; slot++)
-                count[slot] = ((IntTag)list.get(slot)).getAsInt();
+            if(!list.isEmpty()) {
+                count = new int[list.size()];
+                for (int slot = 0; slot < count.length; slot++)
+                    count[slot] = ((IntTag) list.get(slot)).getAsInt();
+            }else {
+                count = nbt.getIntArray("count");
+            }
             upgrades = NBTHelper.readItemList(nbt.getList("upgrades", Tag.TAG_COMPOUND));
             assert upgrades.size() == 7;
         }

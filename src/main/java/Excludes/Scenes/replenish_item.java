@@ -2,7 +2,7 @@ package Excludes.Scenes;
 
 import Excludes.CreateNBTFile;
 import com.simibubi.create.AllBlocks;
-import com.simibubi.create.foundation.utility.NBTHelper;
+import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;

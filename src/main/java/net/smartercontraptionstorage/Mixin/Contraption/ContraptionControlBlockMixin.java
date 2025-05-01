@@ -36,7 +36,7 @@ public abstract class ContraptionControlBlockMixin extends ControlsBlock impleme
      * it says can't find "use" method. And because I don't know very well about Mixin , I can't solve it for Excludes.SpatialPylonBlockEntityMixin moment.
      * Thank you for any advice.
      */
-    @Overwrite
+    @Overwrite(remap = false)
     public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit){
         return this.onBlockEntityUse(level, pos, (cte) -> {
             ItemStack stack = player.getMainHandItem();

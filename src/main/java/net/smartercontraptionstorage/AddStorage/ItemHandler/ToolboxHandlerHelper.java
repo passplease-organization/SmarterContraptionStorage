@@ -2,7 +2,7 @@ package net.smartercontraptionstorage.AddStorage.ItemHandler;
 
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import com.simibubi.create.content.equipment.toolbox.*;
-import com.simibubi.create.foundation.utility.Pair;
+import net.createmod.catnip.data.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
+@Deprecated
 public class ToolboxHandlerHelper extends StorageHandlerHelper implements NeedDealWith, HelperMenuProvider<ToolboxHandlerHelper> {
     public static final ToolboxHandlerHelper INSTANCE = new ToolboxHandlerHelper();
 

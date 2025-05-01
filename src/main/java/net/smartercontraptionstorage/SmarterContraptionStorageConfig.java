@@ -1,6 +1,9 @@
 package net.smartercontraptionstorage;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.fml.ModList;
+
+import static net.smartercontraptionstorage.SmarterContraptionStorage.AE2;
 
 public class SmarterContraptionStorageConfig {
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
@@ -32,5 +35,8 @@ public class SmarterContraptionStorageConfig {
     }
     public static boolean getDefaultOpen(boolean open){
         return open == DEFAULT_OPEN.get();
+    }
+    public static boolean AE2Loaded(){
+        return AE2SUPPORT.get() && ModList.get().isLoaded(AE2);
     }
 }

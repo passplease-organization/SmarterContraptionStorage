@@ -6,7 +6,7 @@ import com.jaquadro.minecraft.storagedrawers.block.BlockDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.BlockEntityDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.BlockEntityDrawersStandard;
 import com.jaquadro.minecraft.storagedrawers.block.tile.tiledata.UpgradeData;
-import com.simibubi.create.foundation.utility.NBTHelper;
+import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
@@ -100,13 +100,18 @@ public class DrawersHandlerHelper extends StorageHandlerHelper {
         }
         public NormalDrawerHandler(CompoundTag nbt){
             super(nbt);
-            count = new int[items.length];
             this.upgrades = new ItemStack[nbt.getInt("upgradesSlot")];
             ListTag list = nbt.getList("count", Tag.TAG_INT);
-            List<ItemStack> upgradesList = NBTHelper.readItemList(nbt.getList("upgrades", Tag.TAG_COMPOUND));
-            for (int slot = 0; slot < count.length; slot++) {
-                count[slot] = ((IntTag) list.get(slot)).getAsInt();
+            if(!list.isEmpty()) {
+                // old version use this method,some method will return this format
+                count = new int[items.length];
+                for (int slot = 0; slot < count.length; slot++) {
+                    count[slot] = ((IntTag) list.get(slot)).getAsInt();
+                }
+            }else {
+                count = nbt.getIntArray("count");
             }
+            List<ItemStack> upgradesList = NBTHelper.readItemList(nbt.getList("upgrades", Tag.TAG_COMPOUND));
             for (int slot = 0; slot < upgrades.length; slot++) {
                 this.upgrades[slot] = upgradesList.get(slot);
             }

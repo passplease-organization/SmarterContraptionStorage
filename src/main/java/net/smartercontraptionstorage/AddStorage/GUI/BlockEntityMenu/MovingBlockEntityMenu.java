@@ -1,6 +1,6 @@
 package net.smartercontraptionstorage.AddStorage.GUI.BlockEntityMenu;
 
-import com.simibubi.create.foundation.utility.Pair;
+import net.createmod.catnip.data.Pair;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;

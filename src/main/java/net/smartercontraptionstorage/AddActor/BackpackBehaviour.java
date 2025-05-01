@@ -1,11 +1,9 @@
 package net.smartercontraptionstorage.AddActor;
 
 import com.simibubi.create.content.contraptions.behaviour.MovementContext;
-import com.simibubi.create.foundation.utility.NBTHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +23,7 @@ public class BackpackBehaviour extends ToolboxBehaviour{
             if(tag != null) {
                 tag = (CompoundTag) tag.get("renderInfo");
                 if(tag != null)
-                    return NBTHelper.readItemList(tag.getList("upgradeItems", Tag.TAG_COMPOUND));
+                    return List.of();//NBTHelper.readItemList(tag.getList("upgradeItems", Tag.TAG_COMPOUND));
             }
         }
         return null;
@@ -39,7 +37,7 @@ public class BackpackBehaviour extends ToolboxBehaviour{
                 if(item.getItem() instanceof MagnetUpgradeItem)
                     magnetTick(context, ((MagnetUpgradeItem) item.getItem()).getRadius());
                 else if(item.is(ModItems.ADVANCED_REFILL_UPGRADE.get()))
-                    refillTick(context,MAX_DISTANCE);
+                    refillTick(context,getMaxDistance());
             }
     }
     public void magnetTick(MovementContext context,int radius){
@@ -49,7 +47,7 @@ public class BackpackBehaviour extends ToolboxBehaviour{
         List<ItemEntity> items = context.world.getEntitiesOfClass(ItemEntity.class,aabb);
         ItemStack stack;
         for(ItemEntity item : items) {
-            stack = ItemHandlerHelper.insertItem(context.contraption.getSharedInventory(), item.getItem(), false);
+            stack = ItemHandlerHelper.insertItem(context.contraption.getStorage().getAllItems(), item.getItem(), false);
             if(stack.isEmpty())
                 item.kill();
             else Utils.isSameItem(item.getItem(),stack);

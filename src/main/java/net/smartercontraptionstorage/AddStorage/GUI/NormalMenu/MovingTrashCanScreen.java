@@ -1,6 +1,5 @@
 package net.smartercontraptionstorage.AddStorage.GUI.NormalMenu;
 
-import com.mojang.blaze3d.vertex.*;
 import com.supermartijn642.core.gui.widget.MutableWidgetRenderContext;
 import com.supermartijn642.trashcans.screen.WhitelistButton;
 import net.minecraft.client.gui.GuiGraphics;
@@ -8,9 +7,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.smartercontraptionstorage.SmarterContraptionStorage;
 
 public class MovingTrashCanScreen extends AbstractMovingScreen<MovingTrashCanMenu> {
-    public static final ResourceLocation BACKGROUND = new ResourceLocation("trashcans","textures/item_screen.png");
+    public static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(SmarterContraptionStorage.TrashCans,"textures/item_screen.png");
 
     public static final int BUTTON_X_IN_SCREEN = 175;
 

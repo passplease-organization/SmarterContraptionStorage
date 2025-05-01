@@ -3,7 +3,6 @@ package net.smartercontraptionstorage.AddStorage.GUI.NormalMenu;
 import com.buuz135.functionalstorage.FunctionalStorage;
 import com.buuz135.functionalstorage.client.gui.DrawerInfoGuiAddon;
 import com.hrznstudio.titanium.Titanium;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -12,8 +11,8 @@ import net.smartercontraptionstorage.Utils;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class MovingFunctionalDrawerScreen extends AbstractMovingScreen<MovingFunctionalDrawerMenu>{
-    public static final ResourceLocation BACKGROUND = new ResourceLocation(Titanium.MODID, "textures/gui/background.png");
-    public static final ResourceLocation TEXTURE = new ResourceLocation(FunctionalStorage.MOD_ID,"textures/block/oak_front_1.png");
+    public static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(Titanium.MODID, "textures/gui/background.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(FunctionalStorage.MOD_ID,"textures/block/oak_front_1.png");
     public DrawerInfoGuiAddon inventorySlot;
     public MovingFunctionalDrawerScreen(MovingFunctionalDrawerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);

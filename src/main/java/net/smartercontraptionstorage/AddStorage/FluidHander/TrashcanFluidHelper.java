@@ -2,9 +2,9 @@ package net.smartercontraptionstorage.AddStorage.FluidHander;
 
 import com.simibubi.create.content.equipment.toolbox.ToolboxBlockEntity;
 import com.simibubi.create.foundation.fluid.SmartFluidTank;
-import com.simibubi.create.foundation.utility.NBTHelper;
 import com.supermartijn642.trashcans.TrashCanBlockEntity;
 import com.supermartijn642.trashcans.filter.ItemFilter;
+import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;

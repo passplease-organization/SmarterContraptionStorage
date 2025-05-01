@@ -4,7 +4,6 @@ import com.simibubi.create.foundation.fluid.CombinedTankWrapper;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -12,12 +11,13 @@ import net.smartercontraptionstorage.Utils;
 import net.smartercontraptionstorage.SmarterContraptionStorageConfig;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-
 public final class DumpHandler extends ItemStackHandler {
     public @NotNull CombinedTankWrapper fluidInventory;
     public DumpHandler(@NotNull CombinedTankWrapper fluidInventory){
         super(1);
+        this.fluidInventory = fluidInventory;
+    }
+    public void setFluidInventory(@NotNull CombinedTankWrapper fluidInventory){
         this.fluidInventory = fluidInventory;
     }
     public static boolean isOpened(){

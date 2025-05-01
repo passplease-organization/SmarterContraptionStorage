@@ -10,7 +10,7 @@ import net.smartercontraptionstorage.Utils;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class MovingFunctionalCompactingScreen extends AbstractMovingScreen<MovingFunctionalCompactingMenu>{
-    public static final ResourceLocation TEXTURE = new ResourceLocation(FunctionalStorage.MOD_ID, "textures/block/compacting_drawer_front.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(FunctionalStorage.MOD_ID, "textures/block/compacting_drawer_front.png");
     public DrawerInfoGuiAddon inventorySlot;
     public MovingFunctionalCompactingScreen(MovingFunctionalCompactingMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);

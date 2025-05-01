@@ -1,7 +1,7 @@
 package net.smartercontraptionstorage.AddStorage.ItemHandler;
 
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
-import com.simibubi.create.foundation.utility.Pair;
+import net.createmod.catnip.data.Pair;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -32,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
+@Deprecated
 public class SBackPacksHandlerHelper extends StorageHandlerHelper implements HelperMenuProvider<SBackPacksHandlerHelper> {
     public static final SBackPacksHandlerHelper INSTANCE = new SBackPacksHandlerHelper();
 

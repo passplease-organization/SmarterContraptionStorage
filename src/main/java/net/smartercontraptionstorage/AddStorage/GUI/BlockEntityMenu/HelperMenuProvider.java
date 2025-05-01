@@ -1,6 +1,6 @@
 package net.smartercontraptionstorage.AddStorage.GUI.BlockEntityMenu;
 
-import com.simibubi.create.foundation.utility.Pair;
+import net.createmod.catnip.data.Pair;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;

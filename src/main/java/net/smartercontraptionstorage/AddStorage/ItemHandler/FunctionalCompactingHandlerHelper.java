@@ -6,7 +6,7 @@ import com.buuz135.functionalstorage.block.tile.CompactingDrawerTile;
 import com.buuz135.functionalstorage.block.tile.SimpleCompactingDrawerTile;
 import com.buuz135.functionalstorage.inventory.CompactingInventoryHandler;
 import com.buuz135.functionalstorage.util.CompactingUtil;
-import com.simibubi.create.foundation.utility.NBTHelper;
+import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;

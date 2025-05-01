@@ -1,7 +1,7 @@
 package net.smartercontraptionstorage.Message;
 
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
-import com.simibubi.create.foundation.utility.Pair;
+import net.createmod.catnip.data.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;

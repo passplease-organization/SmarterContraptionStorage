@@ -1,7 +1,7 @@
 package net.smartercontraptionstorage.AddStorage.GUI.BlockEntityMenu;
 
-import com.simibubi.create.foundation.utility.Pair;
-import com.simibubi.create.foundation.utility.worldWrappers.WrappedWorld;
+import net.createmod.catnip.data.Pair;
+import net.createmod.catnip.levelWrappers.WrappedLevel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class MenuLevel extends WrappedWorld {
+public class MenuLevel extends WrappedLevel {
     private static final Map<Pair<Integer,Long>,BlockEntity> blocks = new HashMap<>();
 
     private static BlockEntity tickingBlockEntity;
