@@ -8,11 +8,11 @@
     "Contraption.ContraptionControlsBlockEntityMixin",
     "Contraption.ContraptionMixin",
     "Contraption.MountedStorageManagerMixin",
-    "Render.RenderMixin",
     "Storage.MountedFluidStorageMixin",
     "Storage.MountedStorageMixin"
   ],
   "client": [
+    "Render.RenderMixin"
   ],
   "injectors": {
     "defaultRequire": 1
