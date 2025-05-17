@@ -158,11 +158,15 @@ public class SmarterContraptionStorage {
             ModList list = ModList.get();
             if(list.isLoaded("create")){
 //                register(ToolboxHandlerHelper.INSTANCE);
+                MenuScreens.register(MovingBlockEntityMenu.BlockEntityMenu.get(), MovingBlockEntityScreen::new);
                 if(list.isLoaded(TrashCans)) {
+                    MenuScreens.register(TrashHandlerHelper.TrashHandler.TrashCanMenu.get(), MovingTrashCanScreen::new);
                     register(new TrashHandlerHelper());
                     register(new TrashcanFluidHelper());
                 }
                 if(list.isLoaded(StorageDrawers)) {
+                    MenuScreens.register(DrawersHandlerHelper.NormalDrawerHandler.DrawerMenu.get(), MovingDrawerScreen::new);
+                    MenuScreens.register(CompactingHandlerHelper.CompactingHandler.CompactingDrawerMenu.get(), MovingCompactingDrawerScreen::new);
                     register(new DrawersHandlerHelper());
                     register(new CompactingHandlerHelper());
                 }
@@ -180,27 +184,13 @@ public class SmarterContraptionStorage {
 //                    register(new SBackPacksFluidHandlerHelper());
 //                }
                 if(list.isLoaded(FunctionalStorage)){
+                    MenuScreens.register(FunctionalDrawersHandlerHelper.FDrawersHandler.MENU_TYPE.get(),MovingFunctionalDrawerScreen::new);
+                    MenuScreens.register(FunctionalCompactingHandlerHelper.FCDrawersHandler.MENU_TYPE.get(),MovingFunctionalCompactingScreen::new);
                     register(new FunctionalDrawersHandlerHelper());
                     register(new FunctionalCompactingHandlerHelper());
                     register(new FunctionalFluidHandlerHelper());
                 }
             }
-            event.enqueueWork(() -> {
-                if(list.isLoaded("create")){
-                    MenuScreens.register(MovingBlockEntityMenu.BlockEntityMenu.get(), MovingBlockEntityScreen::new);
-                    if(list.isLoaded(TrashCans)) {
-                        MenuScreens.register(TrashHandlerHelper.TrashHandler.TrashCanMenu.get(), MovingTrashCanScreen::new);
-                    }
-                    if(list.isLoaded(StorageDrawers)){
-                        MenuScreens.register(DrawersHandlerHelper.NormalDrawerHandler.DrawerMenu.get(), MovingDrawerScreen::new);
-                        MenuScreens.register(CompactingHandlerHelper.CompactingHandler.CompactingDrawerMenu.get(), MovingCompactingDrawerScreen::new);
-                    }
-                    if(list.isLoaded(FunctionalStorage)){
-                        MenuScreens.register(FunctionalDrawersHandlerHelper.FDrawersHandler.MENU_TYPE.get(),MovingFunctionalDrawerScreen::new);
-                        MenuScreens.register(FunctionalCompactingHandlerHelper.FCDrawersHandler.MENU_TYPE.get(),MovingFunctionalCompactingScreen::new);
-                    }
-                }
-            });
         }
     }
 }
