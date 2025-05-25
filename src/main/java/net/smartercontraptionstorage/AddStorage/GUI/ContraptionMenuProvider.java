@@ -12,11 +12,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.smartercontraptionstorage.Utils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface ContraptionMenuProvider<T extends AbstractContainerMenu> extends MenuProvider {
+    @OnlyIn(Dist.CLIENT)
     @Override
     @NotNull T createMenu(int i, Inventory inventory, Player player);
 

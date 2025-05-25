@@ -71,6 +71,7 @@ public interface HelperMenuProvider<T extends StorageHandlerHelper> extends Cont
         ContraptionMenuProvider.super.error();
     }
 
+    @OnlyIn(Dist.CLIENT)
     <U extends Screen & MenuAccess<?>> U createScreen(MovingBlockEntityMenu menu, Inventory inventory, Component component);
 
     default void writeToBuffer(@NotNull FriendlyByteBuf buffer) {
@@ -112,6 +113,7 @@ public interface HelperMenuProvider<T extends StorageHandlerHelper> extends Cont
         return !player.level().isClientSide();
     }
 
+    @OnlyIn(Dist.CLIENT)
     default boolean shouldClickScreen(MovingBlockEntityScreen screen, double mouseX, double mouseY, int button){
         return true;
     }
@@ -124,6 +126,7 @@ public interface HelperMenuProvider<T extends StorageHandlerHelper> extends Cont
         render(screen, guiGraphics, mouseX, mouseY, partialTick);
     }
 
+    @OnlyIn(Dist.CLIENT)
     default boolean slotClicked(MovingBlockEntityScreen screen, Slot slot, int slotId, int button, ClickType type){
         return true;
     }

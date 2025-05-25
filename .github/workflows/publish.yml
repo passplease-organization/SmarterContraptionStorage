@@ -34,10 +34,14 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build with Gradle
-        run: |
-          gradle wrapper --gradle-version 7.6.4
-          gradle build
+      - name: Set Gradle version
+        run: gradle wrapper --gradle-version 7.6.4
+
+      - name: Test Server
+        run: gradle runGameTestServer
+
+      - name: Build
+        run: gradle build
 
       - uses: Kir-Antipov/mc-publish@v3.3
         with:

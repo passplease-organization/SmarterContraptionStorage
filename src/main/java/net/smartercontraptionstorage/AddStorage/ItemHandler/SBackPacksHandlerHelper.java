@@ -15,6 +15,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.ItemStackHandler;
 import net.p3pp3rf1y.sophisticatedbackpacks.backpack.BackpackBlock;
 import net.p3pp3rf1y.sophisticatedbackpacks.backpack.BackpackBlockEntity;
@@ -106,7 +108,7 @@ public class SBackPacksHandlerHelper extends StorageHandlerHelper implements Hel
         return MenuLevel.levelRun((setter) -> {
             setter.accept(getBlockEntity());
             Level level = player.level();
-            player.setLevel(MenuLevel.level);
+            player.setLevel(MenuLevel.level(level));
             BackpackContainer container = new BackpackContainer(i, player, new BackpackContext.Block(getBlockEntity().getBlockPos()));
             player.setLevel(level);
             return container;
@@ -118,6 +120,7 @@ public class SBackPacksHandlerHelper extends StorageHandlerHelper implements Hel
         return menu.getMenu() instanceof BackpackContainer;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public BackpackScreen createScreen(MovingBlockEntityMenu menu, Inventory inventory, Component component) {
         return new BackpackScreen((BackpackContainer) menu.getMenu(), inventory, component);
@@ -176,16 +179,19 @@ public class SBackPacksHandlerHelper extends StorageHandlerHelper implements Hel
         return getBlockEntity().getBackpackWrapper().getDisplayName();
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public boolean shouldClickScreen(MovingBlockEntityScreen screen, double mouseX, double mouseY, int button) {
         return false;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public boolean shouldClickScreen(MovingBlockEntityMenu menu, int index, int flag, ClickType type, Player player) {
         return true;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void render(MovingBlockEntityScreen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         screen.drawContent(guiGraphics,"smartercontraptionstorage.moving_container.backpack.reminder", 0, Math.max(screen.getScreen().getGuiTop() - 10,0));
