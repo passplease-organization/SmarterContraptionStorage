@@ -6,6 +6,8 @@ import com.simibubi.create.AllMovementBehaviours;
 import com.simibubi.create.content.equipment.toolbox.ToolboxBlock;
 import com.simibubi.create.foundation.ponder.PonderRegistry;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import net.minecraftforge.registries.RegistryObject;
+import net.p3pp3rf1y.sophisticatedbackpacks.backpack.BackpackBlock;
 import net.smartercontraptionstorage.Message.MenuLevelPacket;
 import net.smartercontraptionstorage.Message.ModMessage;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -38,6 +40,8 @@ import net.smartercontraptionstorage.AddStorage.ItemHandler.UnstorageHelper.AEEn
 import net.smartercontraptionstorage.AddStorage.ItemHandler.UnstorageHelper.MEStorageFilter;
 import net.smartercontraptionstorage.Ponder.SCS_Ponder;
 import net.smartercontraptionstorage.AddActor.ToolboxBehaviour;
+
+import java.lang.reflect.Field;
 
 import static net.smartercontraptionstorage.AddStorage.ItemHandler.StorageHandlerHelper.register;
 import static net.smartercontraptionstorage.AddStorage.FluidHander.FluidHandlerHelper.register;
@@ -103,11 +107,17 @@ public class SmarterContraptionStorage {
                 register(new SBackPacksFluidHandlerHelper());
                 BackpackBehaviour backpackBehaviour = new BackpackBehaviour();
                 AllMovementBehaviours.registerBehaviour(net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks.BACKPACK.get(),backpackBehaviour);
-                AllMovementBehaviours.registerBehaviour(net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks.COPPER_BACKPACK.get(),backpackBehaviour);
                 AllMovementBehaviours.registerBehaviour(net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks.IRON_BACKPACK.get(),backpackBehaviour);
                 AllMovementBehaviours.registerBehaviour(net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks.GOLD_BACKPACK.get(),backpackBehaviour);
                 AllMovementBehaviours.registerBehaviour(net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks.DIAMOND_BACKPACK.get(),backpackBehaviour);
                 AllMovementBehaviours.registerBehaviour(net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks.NETHERITE_BACKPACK.get(),backpackBehaviour);
+                try {// Old version of backpack didn't have copper backpack
+                    Field copperBackpack = net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks.class.getDeclaredField("COPPER_BACKPACK");
+                    AllMovementBehaviours.registerBehaviour(((RegistryObject<BackpackBlock>)copperBackpack.get(net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks.class)).get(),backpackBehaviour);
+                } catch (NoSuchFieldException e) {
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
             }
             if(list.isLoaded("functionalstorage")){
                 register(new FunctionalDrawersHandlerHelper());
