@@ -4,6 +4,8 @@ on: [push, pull_request]
 
 jobs:
   build:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -21,5 +23,13 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Test Server
+        run: gradle runGameTestServer
+
       - name: Build with Gradle
         run: gradle build
+
+      - uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-tag: 1.21.1-NeoForge
