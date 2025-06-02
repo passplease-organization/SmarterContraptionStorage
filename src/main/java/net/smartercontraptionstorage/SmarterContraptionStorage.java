@@ -6,6 +6,8 @@ import com.simibubi.create.content.equipment.toolbox.ToolboxBlock;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.javafmlmod.FMLModContainer;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.smartercontraptionstorage.Message.MenuLevelPacket;
 import net.smartercontraptionstorage.Message.ModMessage;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -24,7 +26,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
 import net.smartercontraptionstorage.AddStorage.FluidHander.FunctionalFluidHandlerHelper;
 import net.smartercontraptionstorage.AddStorage.FluidHander.TrashcanFluidHelper;
 import net.smartercontraptionstorage.AddStorage.GUI.BlockEntityMenu.MovingBlockEntityMenu;
@@ -51,9 +52,18 @@ public class SmarterContraptionStorage {
     public static final String SBackPack = "sophisticatedbackpacks";
     public static final String AE2 = "ae2";
     public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
+    /**
+     * For Forge
+     * */
     public SmarterContraptionStorage(FMLJavaModLoadingContext context) {
+        this(context.getContainer());
+    }
+    /**
+     * For NeoForge
+     * */
+    public SmarterContraptionStorage(FMLModContainer context) {
         MinecraftForge.EVENT_BUS.register(this);
-        IEventBus modEventBus = context.getModEventBus();
+        IEventBus modEventBus = context.getEventBus();
         MENU_TYPES.register(modEventBus);
         REGISTRATE.registerEventListeners(modEventBus);
         modEventBus.addListener(this::commonSetup);
@@ -84,68 +94,61 @@ public class SmarterContraptionStorage {
                 ));
             }
         }
-        context.registerConfig(ModConfig.Type.COMMON, SmarterContraptionStorageConfig.SPEC,"Smarter_Contraption_Storage.toml");
-    }
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) {
-        // Do something when the server starts
-        ModList list = ModList.get();
-        if(list.isLoaded("create")){
-            // TODO 适配垃圾桶的过滤
-//            register(ToolboxHandlerHelper.INSTANCE);
-            if(list.isLoaded(TrashCans)) {
-                register(new TrashHandlerHelper());
-                register(new TrashcanFluidHelper());
-            }
-            if(list.isLoaded(StorageDrawers)) {
-                register(new DrawersHandlerHelper());
-                register(new CompactingHandlerHelper());
-            }
-//            if(list.isLoaded(SBackPack)){
-//                register(SBackPacksHandlerHelper.INSTANCE);
-//                register(new SBackPacksFluidHandlerHelper());
-//            }
-            if(list.isLoaded(FunctionalStorage)){
-                register(new FunctionalDrawersHandlerHelper());
-                register(new FunctionalCompactingHandlerHelper());
-                register(new FunctionalFluidHandlerHelper());
-            }
-            if(SmarterContraptionStorageConfig.AE2Loaded()){
-                register(new AE2BusBlockHelper());
-                register(new MEStorageFilter());
-                register(new AEControllerBlock());
-                register(new AEEnergyBlock());
-                register(new SpatialHandler());
-            }
-            if(list.isLoaded(CobbleForDays))
-                register(new CobblestoneGenerator());
-        }
+        context.addConfig(new ModConfig(ModConfig.Type.COMMON, SmarterContraptionStorageConfig.SPEC,context,"Smarter_Contraption_Storage.toml"));
     }
     private void commonSetup(final FMLCommonSetupEvent event) {
         ModMessage.register(new MenuLevelPacket());
         ModMessage.registerMessages();
-        PonderIndex.addPlugin(new SCS_Ponder());
-        event.enqueueWork(() -> {
-            ModList list = ModList.get();
-            if(list.isLoaded("create")){
-                ToolboxBehaviour behaviour = new ToolboxBehaviour();
-                for (BlockEntry<ToolboxBlock> toolboxBlockBlockEntry : AllBlocks.TOOLBOXES) {
-                    MovementBehaviour.REGISTRY.register(toolboxBlockBlockEntry.get(), behaviour);
-                }
-                if(list.isLoaded(SBackPack)){
-                    BackpackBehaviour backpackBehaviour = new BackpackBehaviour();
-                    MovementBehaviour.REGISTRY.register(net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks.BACKPACK.get(),backpackBehaviour);
-                    MovementBehaviour.REGISTRY.register(net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks.COPPER_BACKPACK.get(),backpackBehaviour);
-                    MovementBehaviour.REGISTRY.register(net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks.IRON_BACKPACK.get(),backpackBehaviour);
-                    MovementBehaviour.REGISTRY.register(net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks.GOLD_BACKPACK.get(),backpackBehaviour);
-                    MovementBehaviour.REGISTRY.register(net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks.DIAMOND_BACKPACK.get(),backpackBehaviour);
-                    MovementBehaviour.REGISTRY.register(net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks.NETHERITE_BACKPACK.get(),backpackBehaviour);
-                }
+        ModList list = ModList.get();
+        if(list.isLoaded("create")){
+            ToolboxBehaviour behaviour = new ToolboxBehaviour();
+            for (BlockEntry<ToolboxBlock> toolboxBlockBlockEntry : AllBlocks.TOOLBOXES) {
+                MovementBehaviour.REGISTRY.register(toolboxBlockBlockEntry.get(), behaviour);
             }
-        });
+            if(list.isLoaded(SBackPack)){
+                BackpackBehaviour backpackBehaviour = new BackpackBehaviour();
+                MovementBehaviour.REGISTRY.register(net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks.BACKPACK.get(),backpackBehaviour);
+                MovementBehaviour.REGISTRY.register(net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks.COPPER_BACKPACK.get(),backpackBehaviour);
+                MovementBehaviour.REGISTRY.register(net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks.IRON_BACKPACK.get(),backpackBehaviour);
+                MovementBehaviour.REGISTRY.register(net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks.GOLD_BACKPACK.get(),backpackBehaviour);
+                MovementBehaviour.REGISTRY.register(net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks.DIAMOND_BACKPACK.get(),backpackBehaviour);
+                MovementBehaviour.REGISTRY.register(net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks.NETHERITE_BACKPACK.get(),backpackBehaviour);
+            }
+        }
     }
 
     private void registerType(FMLLoadCompleteEvent event){
+        ModList list = ModList.get();
+        if(FMLEnvironment.dist == Dist.DEDICATED_SERVER){
+            if(list.isLoaded("create")){
+                // TODO 适配垃圾桶的过滤
+//            register(ToolboxHandlerHelper.INSTANCE);
+                if(list.isLoaded(TrashCans)) {
+                    register(new TrashHandlerHelper());
+                    register(new TrashcanFluidHelper());
+                }
+                if(list.isLoaded(StorageDrawers)) {
+                    register(new DrawersHandlerHelper());
+                    register(new CompactingHandlerHelper());
+                }
+                if(list.isLoaded(FunctionalStorage)){
+                    register(new FunctionalDrawersHandlerHelper());
+                    register(new FunctionalCompactingHandlerHelper());
+                    register(new FunctionalFluidHandlerHelper());
+                }
+                if(SmarterContraptionStorageConfig.AE2Loaded()){
+                    register(new AE2BusBlockHelper());
+                    register(new MEStorageFilter());
+                    register(new AEControllerBlock());
+                    register(new AEEnergyBlock());
+                    register(new SpatialHandler());
+                }
+                if(list.isLoaded(CobbleForDays))
+                    register(new CobblestoneGenerator());
+            }
+        }
+        if(list.isLoaded(TrashCans))
+            MovingItemStorageType.registerTrashCan();
         MovingItemStorageType.register();
     }
 
@@ -157,6 +160,7 @@ public class SmarterContraptionStorage {
             // Some client setup code
             ModList list = ModList.get();
             if(list.isLoaded("create")){
+                PonderIndex.addPlugin(new SCS_Ponder());
 //                register(ToolboxHandlerHelper.INSTANCE);
                 MenuScreens.register(MovingBlockEntityMenu.BlockEntityMenu.get(), MovingBlockEntityScreen::new);
                 if(list.isLoaded(TrashCans)) {
@@ -179,10 +183,6 @@ public class SmarterContraptionStorage {
                 }
                 if(list.isLoaded(CobbleForDays))
                     register(new CobblestoneGenerator());
-//                if(list.isLoaded(SBackPack)){
-//                    register(SBackPacksHandlerHelper.INSTANCE);
-//                    register(new SBackPacksFluidHandlerHelper());
-//                }
                 if(list.isLoaded(FunctionalStorage)){
                     MenuScreens.register(FunctionalDrawersHandlerHelper.FDrawersHandler.MENU_TYPE.get(),MovingFunctionalDrawerScreen::new);
                     MenuScreens.register(FunctionalCompactingHandlerHelper.FCDrawersHandler.MENU_TYPE.get(),MovingFunctionalCompactingScreen::new);

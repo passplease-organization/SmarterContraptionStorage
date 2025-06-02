@@ -142,7 +142,7 @@ public final class Utils {
         return stack.isEmpty() || stack.getItem() == Items.AIR;
     }
     public static ResourceLocation asResources(String name){
-        return ResourceLocation.fromNamespaceAndPath(SmarterContraptionStorage.MODID,name);
+        return ResourceLocation.tryBuild(SmarterContraptionStorage.MODID,name);
     }
     public static void renderInto(VertexConsumer builder, Matrix4f matrix, float x, float y, float z,Color color, TextureAtlasSprite uv, double u, double v, int overlay, int light, float normal_1, float normal_2, float normal_3){
         builder.vertex(matrix,x,y,z)

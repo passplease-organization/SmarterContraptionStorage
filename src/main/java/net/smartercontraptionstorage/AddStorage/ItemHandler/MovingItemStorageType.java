@@ -4,7 +4,6 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
 import com.simibubi.create.api.contraption.storage.item.MountedItemStorageType;
 import com.simibubi.create.foundation.data.CreateRegistrate;
-import com.supermartijn642.trashcans.TrashCans;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -15,13 +14,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.ItemStackHandler;
 import net.smartercontraptionstorage.FunctionChanger;
 import net.smartercontraptionstorage.SmarterContraptionStorage;
 import net.smartercontraptionstorage.Utils;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Field;
 import java.util.Objects;
 
 public class MovingItemStorageType extends MountedItemStorageType<MovingItemStorage> {
@@ -85,10 +84,21 @@ public class MovingItemStorageType extends MountedItemStorageType<MovingItemStor
             }
             return false;
         }).forEach(MovingItemStorageType::register);
-        ModList list = ModList.get();
-        if(list.isLoaded(SmarterContraptionStorage.TrashCans)){
-            register(TrashCans.item_trash_can);
-            register(TrashCans.ultimate_trash_can);
+    }
+
+    public static void registerTrashCan() {
+        try{
+            Class<?> trashcan = com.supermartijn642.trashcans.TrashCans.class;
+
+            Field item_trash_can = trashcan.getDeclaredField("item_trash_can");
+            register((Block) item_trash_can.get(trashcan));
+
+            Field ultimate_trash_can = trashcan.getDeclaredField("ultimate_trash_can");
+            register((Block) ultimate_trash_can.get(trashcan));
+        } catch (NoSuchFieldException e) {
+            Utils.addError("Unchecked Trash Can register !");
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 

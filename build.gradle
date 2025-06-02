@@ -6,16 +6,15 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("net.neoforged.moddev.legacyforge:net.neoforged.moddev.legacyforge.gradle.plugin:2.0.80")
+        classpath("net.neoforged.moddev.legacyforge:net.neoforged.moddev.legacyforge.gradle.plugin:2.0.84")
     }
 }
 
 plugins {
     id 'eclipse'
     id 'idea'
+    id "net.neoforged.moddev.legacyforge" version "2.0.84"
 }
-
-apply plugin: "net.neoforged.moddev.legacyforge"
 
 group = mod_group_id
 version = mod_version
@@ -50,6 +49,18 @@ legacyForge {
         }
     }
     runs {
+        configureEach {
+            systemProperty 'forge.logging.markers', ''
+            systemProperty 'forge.logging.console.level', 'info'
+            jvmArguments = ["-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition"]
+            //jvmArgs("-XX:-OmitStackTraceInFastThrow") // uncomment when you get exceptions with null messages etc
+            //jvmArgs '-XX:+UnlockCommercialFeatures' // uncomment for profiling
+
+            systemProperty 'mixin.debug.export', 'true'
+            systemProperty 'mixin.debug.verbose', 'true'
+
+            programArgument '-mixin.config=smartercontraptionstorage.mixins.json'
+        }
 
         client {
             client()
@@ -94,11 +105,18 @@ tasks.named('compileJava'){
 }
 
 repositories {
+    mavenLocal()
+    maven { url 'https://maven.aliyun.com/repository/public' }
+    maven { url 'https://maven.aliyun.com/repository/google' }
+    maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+    google()
+
     maven { url = "https://maven.createmod.net" } // Ponder, Flywheel
     maven { url = "https://maven.tterrag.com" } // Registrate
     maven { url = "https://www.cursemaven.com" }
+    maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+    gradlePluginPortal()
     mavenCentral()
-    mavenLocal()
 }
 dependencies {
     modImplementation("curse.maven:create-328085:6323270")
@@ -111,7 +129,7 @@ dependencies {
     modImplementation(jarJar("com.tterrag.registrate:Registrate:${registrate_version}"))
     jarJar("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
 
-    modImplementation("curse.maven:storage-drawers-223852:5152196")
+    modImplementation("curse.maven:storage-drawers-223852:6549483")
     modImplementation("curse.maven:trash-cans-394535:4712179")
     modImplementation("curse.maven:supermartijn642s-config-lib-438332:4715408")
     modImplementation("curse.maven:supermartijn642s-core-lib-454372:5102258")

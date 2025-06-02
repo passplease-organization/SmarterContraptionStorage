@@ -79,6 +79,7 @@ public class TrashHandlerHelper extends StorageHandlerHelper{
                 items[i].setCount(1);
                 slotLimits[i] = 1;
             }
+            toolboxItem = new ArrayList<>();
         }
         public TrashHandler(CompoundTag nbt){
             super(nbt);
