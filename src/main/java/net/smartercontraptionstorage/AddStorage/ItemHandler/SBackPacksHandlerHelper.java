@@ -15,6 +15,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.ItemStackHandler;
 import net.p3pp3rf1y.sophisticatedbackpacks.backpack.BackpackBlock;
 import net.p3pp3rf1y.sophisticatedbackpacks.backpack.BackpackBlockEntity;
@@ -106,7 +108,7 @@ public class SBackPacksHandlerHelper extends StorageHandlerHelper implements Hel
         return MenuLevel.levelRun((setter) -> {
             setter.accept(getBlockEntity());
             Level level = player.level;
-            player.level = MenuLevel.level;
+            player.level = MenuLevel.level(level);
             BackpackContainer container = new BackpackContainer(i, player, new BackpackContext.Block(getBlockEntity().getBlockPos()));
             player.level = level;
             return container;
@@ -118,6 +120,7 @@ public class SBackPacksHandlerHelper extends StorageHandlerHelper implements Hel
         return menu.getMenu() instanceof BackpackContainer;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public BackpackScreen createScreen(MovingBlockEntityMenu menu, Inventory inventory, Component component) {
         return new BackpackScreen((BackpackContainer) menu.getMenu(), inventory, component);

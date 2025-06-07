@@ -1,4 +1,5 @@
 /run/
+/1.19.2-run/
 /.vscode/
 /.idea/
 /bin/

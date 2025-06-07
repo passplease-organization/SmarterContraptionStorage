@@ -1,18 +1,24 @@
 buildscript {
     repositories {
         // These repositories are only for Gradle plugins, put any other repositories in the repository overlays further below
+        maven { url = 'https://maven.parchmentmc.org' }
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        maven { url = 'https://maven.minecraftforge.net' }
+        mavenLocal()
         mavenCentral()
     }
     dependencies {
+        classpath "net.minecraftforge.gradle:ForgeGradle:5.1.74"
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath "org.parchmentmc:librarian:1.+"
     }
 }
 
 plugins {
     id 'eclipse'
     id 'idea'
-    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
@@ -73,7 +79,7 @@ minecraft {
     runs {
         // applies to all the run configs below
         configureEach {
-            workingDirectory project.file('run')
+            workingDirectory project.file('1.19.2-run')
 
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
@@ -103,6 +109,7 @@ minecraft {
         server {
             property 'forge.enabledGameTestNamespaces', mod_id
             args '--nogui'
+            workingDirectory project.file('1.19.2-run/server')
         }
 
         // This run config launches GameTestServer and runs all registered gametests, then exits.
@@ -166,7 +173,6 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:mekanism-268560:4644795")
     runtimeOnly fg.deobf("curse.maven:cyclops-core-232758:4681659")
     runtimeOnly fg.deobf("curse.maven:capabilityproxy-266479:3929855")
-    runtimeOnly fg.deobf("curse.maven:toms-storage-378609:4649846")
     compileOnly fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
     implementation fg.deobf("curse.maven:create-328085:4835190")
     implementation fg.deobf("curse.maven:storage-drawers-223852:5648923")

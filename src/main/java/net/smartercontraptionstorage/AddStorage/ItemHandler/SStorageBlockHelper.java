@@ -13,6 +13,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.ItemStackHandler;
 import net.p3pp3rf1y.sophisticatedcore.inventory.InventoryHandler;
 import net.p3pp3rf1y.sophisticatedcore.util.BlockItemBase;
@@ -111,7 +113,7 @@ public class SStorageBlockHelper extends StorageHandlerHelper implements HelperM
         if(getPair() != null) {
             MenuLevel.tickingBlockEntity(getPair(),player.level);
             Level level = player.level;
-            player.level = MenuLevel.level;
+            player.level = MenuLevel.level(level);
             menu = isLimitedBarrelBlock() ? new LimitedBarrelContainerMenu(i, player, getBlockEntity().getBlockPos()) : new StorageContainerMenu(i,player,getBlockEntity().getBlockPos());
             player.level = level;
         }
@@ -123,6 +125,7 @@ public class SStorageBlockHelper extends StorageHandlerHelper implements HelperM
         return isLimitedBarrelBlock() ? menu.getMenu() instanceof LimitedBarrelContainerMenu : menu.getMenu() instanceof StorageContainerMenu;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public StorageScreen createScreen(MovingBlockEntityMenu menu, Inventory inventory, Component component) {
         if(isLimitedBarrelBlock()) {

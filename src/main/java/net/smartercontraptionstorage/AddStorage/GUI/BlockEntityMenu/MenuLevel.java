@@ -3,8 +3,11 @@ package net.smartercontraptionstorage.AddStorage.GUI.BlockEntityMenu;
 import com.simibubi.create.foundation.utility.Pair;
 import com.simibubi.create.foundation.utility.worldWrappers.WrappedWorld;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.smartercontraptionstorage.Message.MenuLevelPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -25,10 +28,10 @@ public class MenuLevel extends WrappedWorld {
 
     private static Level tickingLevel;
 
-    public static MenuLevel level = new MenuLevel();
+    private static ClientMenuLevel clientLevel = null;
 
-    private MenuLevel() {
-        super(Minecraft.getInstance().level);
+    private MenuLevel(Level level) {
+        super(level);
     }
 
     public static Map<Pair<Integer, Long>, BlockEntity> getBlocks(){
@@ -59,26 +62,35 @@ public class MenuLevel extends WrappedWorld {
         return blocks.get(pair);
     }
 
-    public static MenuLevel tickingBlockEntity(Pair<Integer, Long> pair,boolean isClient) {
+    private static MenuLevel clientLevel(){
+        if(clientLevel == null){
+            clientLevel = new ClientMenuLevel();
+        }
+        return clientLevel.clientLevel;
+    }
+
+    public static MenuLevel level(Level level) {
+        if(level.isClientSide()) {
+            return clientLevel();
+        }
+        else if(level instanceof ServerLevel){
+            return new MenuLevel(level);
+        }else throw new RuntimeException("Open menu get null server level !");
+    }
+
+    public static MenuLevel tickingBlockEntity(Pair<Integer, Long> pair,Level level){
         if(tickingBlockEntity != null){
             tickingBlockEntity.setLevel(tickingLevel);
         }
         if(blocks.containsKey(pair)) {
             tickingBlockEntity = blocks.get(pair);
             tickingLevel = tickingBlockEntity.getLevel();
-            tickingBlockEntity.setLevel(level);
+            MenuLevel menuLevel = level(level);
+            tickingBlockEntity.setLevel(menuLevel);
+            return menuLevel;
         } else {
-            tickingBlockEntity = null;
-            tickingLevel = null;
+            throw new IllegalArgumentException("Pair is not found ! Pair: " + pair);
         }
-        level.isClientSide = isClient;
-        return level;
-    }
-
-    public static MenuLevel tickingBlockEntity(Pair<Integer, Long> pair,Level level){
-        MenuLevel value = tickingBlockEntity(pair, level.isClientSide());
-        tickingLevel = level;
-        return value;
     }
 
     private static void setTickingBlockEntity(BlockEntity blockEntity){
@@ -106,5 +118,10 @@ public class MenuLevel extends WrappedWorld {
     public boolean addFreshEntity(Entity entityIn) {
         entityIn.level = tickingLevel;
         return tickingLevel.addFreshEntity(entityIn);
+    }
+
+    private static class ClientMenuLevel{
+        @OnlyIn(Dist.CLIENT)
+        protected MenuLevel clientLevel = new MenuLevel(Minecraft.getInstance().level);
     }
 }

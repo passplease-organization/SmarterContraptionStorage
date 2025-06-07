@@ -21,25 +21,44 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          fetch-tags: true
 
-      - name: Setup JDK 21
+      - name: Setup JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '17'
           distribution: 'temurin'
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.4'
+
+      - name: Test Server
+        run: gradle runGameTestServer
+        continue-on-error: true
 
       - name: Build with Gradle
-        run: |
-          gradle wrapper --gradle-version 7.6.4
-          gradle build
+        run: gradle build
+
+      - name: Create timestamp
+        id: create_timestamp
+        run: echo "timestamp=$(date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_OUTPUT
+        shell: bash
 
       - uses: Kir-Antipov/mc-publish@v3.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          github-tag: 1.19.2-Forge
+          github-tag: 1.19.2-Forge-${{ steps.create_timestamp.outputs.timestamp }}
+          github-draft: false
+          github-prerelease: false
+
+      - uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          include-hidden-files: true
+          path: |
+            **/logs/
+            **/crash-reports/
+            build/libs
+          retention-days: 7
+        if: always()

@@ -16,6 +16,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.ItemStackHandler;
 import net.smartercontraptionstorage.AddStorage.GUI.BlockEntityMenu.HelperMenuProvider;
@@ -124,6 +126,7 @@ public class ToolboxHandlerHelper extends StorageHandlerHelper implements NeedDe
         return pair;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public ToolboxScreen createScreen(MovingBlockEntityMenu menu, Inventory inventory, Component component) {
         return new ToolboxScreen((ToolboxMenu) menu.getMenu(),inventory,component);

@@ -71,6 +71,7 @@ public interface HelperMenuProvider<T extends StorageHandlerHelper> extends Cont
         ContraptionMenuProvider.super.error();
     }
 
+    @OnlyIn(Dist.CLIENT)
     <U extends Screen & MenuAccess<?>> U createScreen(MovingBlockEntityMenu menu, Inventory inventory, Component component);
 
     default void writeToBuffer(@NotNull FriendlyByteBuf buffer) {
