@@ -1,8 +1,11 @@
 package net.smartercontraptionstorage.AddStorage.ItemHandler;
 
-import com.simibubi.create.content.equipment.toolbox.ToolboxBlockEntity;
+import com.simibubi.create.api.contraption.storage.item.MountedItemStorage;
+import com.simibubi.create.content.equipment.toolbox.ToolboxInventory;
+import com.simibubi.create.content.equipment.toolbox.ToolboxMountedStorage;
 import com.supermartijn642.trashcans.TrashCanBlockEntity;
 import net.createmod.catnip.nbt.NBTHelper;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -22,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class TrashHandlerHelper extends StorageHandlerHelper{
@@ -94,7 +98,7 @@ public class TrashHandlerHelper extends StorageHandlerHelper{
                     return false;
             }
             for (ItemStack item : items){
-                if(Utils.isSameItem(item,stack))
+                if(Utils.isSameItemSameTags(item,stack))
                     return whiteOrBlack;
             }
             return !whiteOrBlack;
@@ -114,14 +118,21 @@ public class TrashHandlerHelper extends StorageHandlerHelper{
         @Override
         public void doSomething(BlockEntity entity) {}
         @Override
-        public void finallyDo() {
+        public void finallyDo() {}
+
+        @Override
+        public void finallyDo(Map<BlockPos, MountedItemStorage> itemsBuilder) {
             ArrayList<ItemStack> toolboxItem = new ArrayList<>();
-            for(BlockEntity entity : BlockEntityList)
-                if(entity instanceof ToolboxBlockEntity){
-                    toolboxItem.addAll(NBTHelper.readItemList(entity.serializeNBT().getCompound("Inventory").getList("Compartments", Tag.TAG_COMPOUND)));
+            for(MountedItemStorage storage : itemsBuilder.values())
+                if(storage instanceof ToolboxMountedStorage toolboxMountedStorage){
+                    for (int slot = 0; slot < toolboxMountedStorage.getSlots(); slot += ToolboxInventory.STACKS_PER_COMPARTMENT) {
+                        if(!toolboxItem.contains(toolboxMountedStorage.getStackInSlot(slot)))
+                            toolboxItem.add(toolboxMountedStorage.getStackInSlot(slot));
+                    }
                 }
             this.toolboxItem = toolboxItem.stream().filter((item)->!item.isEmpty()).toList();
         }
+
         @Override
         public CompoundTag serializeNBT() {
             CompoundTag tag = super.serializeNBT();

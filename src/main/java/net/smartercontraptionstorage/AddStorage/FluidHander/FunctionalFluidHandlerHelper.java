@@ -3,27 +3,27 @@ package net.smartercontraptionstorage.AddStorage.FluidHander;
 import com.buuz135.functionalstorage.block.FluidDrawerBlock;
 import com.buuz135.functionalstorage.block.tile.FluidDrawerTile;
 import com.buuz135.functionalstorage.fluid.BigFluidHandler;
-import com.simibubi.create.foundation.fluid.SmartFluidTank;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
 public class FunctionalFluidHandlerHelper extends FluidHandlerHelper{
+    @Deprecated
     public static final String Slot = Integer.toString(DefaultSlot);
-    public static final String Locked = "Locked" + Slot;
+    public static final String LOCKED = "Locked";
+    public static final String VOID = "Void";
+    public static final String CREATIVE = "Creative";
     @Override
-    public void addStorageToWorld(BlockEntity entity, SmartFluidTank helper) {
+    public void addStorageToWorld(BlockEntity entity, IFluidHandler tank) {
         assert canCreateHandler(entity);
-        FluidDrawerTile Entity = (FluidDrawerTile)entity;
-        CompoundTag nbt = Entity.getFluidHandler().serializeNBT();
-        nbt.put(Slot, helper.getFluid().writeToNBT(new CompoundTag()));
-        nbt.put(Locked,((FluidDrawerHandler)helper).filter.writeToNBT(new CompoundTag()));
-        Entity.getFluidHandler().deserializeNBT(nbt);
+        if(tank instanceof BigFluidHandler handler)
+            ((FluidDrawerTile)entity).getFluidHandler().deserializeNBT(handler.serializeNBT());
     }
 
     @Override
@@ -42,9 +42,20 @@ public class FunctionalFluidHandlerHelper extends FluidHandlerHelper{
     }
 
     @Override
-    public @NotNull SmartFluidTank createHandler(BlockEntity entity) {
+    public @NotNull IFluidHandler createHandler(BlockEntity entity) {
         assert canCreateHandler(entity);
-        return new FluidDrawerHandler(((FluidDrawerTile) entity).getFluidHandler());
+        return ((FluidDrawerTile)entity).getFluidHandler();
+    }
+
+    @Override
+    public @NotNull CompoundTag serializeNBT(IFluidHandler handler) {
+        if(handler instanceof BigFluidHandler drawer){
+            CompoundTag nbt = drawer.serializeNBT();
+            nbt.putBoolean(LOCKED, drawer.isDrawerLocked());
+            nbt.putBoolean(VOID,drawer.isDrawerVoid());
+            nbt.putBoolean(CREATIVE,drawer.isDrawerCreative());
+            return nbt;
+        }else return new CompoundTag();
     }
 
     @Override
@@ -53,18 +64,55 @@ public class FunctionalFluidHandlerHelper extends FluidHandlerHelper{
     }
 
     @Override
-    public @NotNull FluidDrawerHandler deserialize(CompoundTag nbt) {
-        return new FluidDrawerHandler(nbt);
+    public @NotNull BigFluidHandler deserialize(CompoundTag nbt) {
+        BigFluidHandler drawer = new BigFluidHandler(1,1) {
+            @Override
+            public void onChange() {}
+
+            boolean locked;
+
+            @Override
+            public boolean isDrawerLocked() {
+                return locked;
+            }
+
+            boolean Void;
+
+            @Override
+            public boolean isDrawerVoid() {
+                return Void;
+            }
+
+            private boolean creative;
+
+            @Override
+            public boolean isDrawerCreative() {
+                return creative;
+            }
+
+            @Override
+            public void deserializeNBT(CompoundTag nbt) {
+                super.deserializeNBT(nbt);
+                locked = nbt.getBoolean(LOCKED);
+                Void = nbt.getBoolean(VOID);
+                creative = nbt.getBoolean(CREATIVE);
+            }
+        };
+        drawer.deserializeNBT(nbt);
+        return drawer;
     }
 
+    @Deprecated
     public static class FluidDrawerHandler extends FluidHelper{
         public final FluidStack filter;
+        @Deprecated
         public FluidDrawerHandler(BigFluidHandler handler) {
             super(handler.getTankCapacity(DefaultSlot));
             fluid = handler.getFluidInTank(DefaultSlot);
             filter = Arrays.stream(handler.getFilterStack()).toList().get(DefaultSlot);
         }
 
+        @Deprecated
         public FluidDrawerHandler(CompoundTag nbt){
             super(nbt);
             filter = FluidStack.loadFluidStackFromNBT(nbt);
@@ -87,7 +135,7 @@ public class FunctionalFluidHandlerHelper extends FluidHandlerHelper{
         }
 
         @Override
-        public CompoundTag serialize(CompoundTag tag) {
+        protected CompoundTag serialize(CompoundTag tag) {
             filter.writeToNBT(tag);
             return tag;
         }

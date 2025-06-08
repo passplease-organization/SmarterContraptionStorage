@@ -4,6 +4,7 @@ import appeng.api.networking.IGridNode;
 import appeng.blockentity.networking.ControllerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+// TODO AE能用不
 public class AEControllerBlock extends InitializeHelper{
     @Override
     public boolean canDoSomething(BlockEntity entity) {

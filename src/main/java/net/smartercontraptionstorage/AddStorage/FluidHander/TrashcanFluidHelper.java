@@ -1,29 +1,33 @@
 package net.smartercontraptionstorage.AddStorage.FluidHander;
 
-import com.simibubi.create.content.equipment.toolbox.ToolboxBlockEntity;
-import com.simibubi.create.foundation.fluid.SmartFluidTank;
+import com.simibubi.create.api.contraption.storage.fluid.MountedFluidStorage;
+import com.simibubi.create.api.contraption.storage.item.MountedItemStorage;
+import com.simibubi.create.content.equipment.toolbox.ToolboxInventory;
+import com.simibubi.create.content.equipment.toolbox.ToolboxMountedStorage;
 import com.supermartijn642.trashcans.TrashCanBlockEntity;
 import com.supermartijn642.trashcans.filter.ItemFilter;
-import net.createmod.catnip.nbt.NBTHelper;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.smartercontraptionstorage.AddStorage.NeedDealWith;
+import net.smartercontraptionstorage.Utils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static net.smartercontraptionstorage.Utils.getFluidByItem;
 
 public class TrashcanFluidHelper extends FluidHandlerHelper {
     @Override
-    public void addStorageToWorld(BlockEntity entity, SmartFluidTank helper) {
+    public void addStorageToWorld(BlockEntity entity, IFluidHandler tank) {
         assert canCreateHandler(entity);
     }
 
@@ -41,9 +45,16 @@ public class TrashcanFluidHelper extends FluidHandlerHelper {
         return entity instanceof TrashCanBlockEntity && ((TrashCanBlockEntity)entity).liquids;
     }
     @Override
-    public @NotNull SmartFluidTank createHandler(BlockEntity entity) {
+    public @NotNull IFluidHandler createHandler(BlockEntity entity) {
         assert canCreateHandler(entity);
         return new TrashcanHelper((TrashCanBlockEntity) entity);
+    }
+
+    @Override
+    public @NotNull CompoundTag serializeNBT(IFluidHandler handler) {
+        if(handler instanceof TrashcanHelper trashcan){
+            return trashcan.writeToNBT(new CompoundTag());
+        }else return new CompoundTag();
     }
 
     @Override
@@ -52,7 +63,7 @@ public class TrashcanFluidHelper extends FluidHandlerHelper {
     }
 
     @Override
-    public @NotNull SmartFluidTank deserialize(CompoundTag nbt) {
+    public @NotNull TrashcanHelper deserialize(CompoundTag nbt) {
         return new TrashcanHelper(nbt);
     }
 
@@ -72,6 +83,7 @@ public class TrashcanFluidHelper extends FluidHandlerHelper {
                         filter.addAll(list);
                 }
             fluid = FluidStack.EMPTY;
+            toolboxFluid =  new ArrayList<>();
         }
 
         public TrashcanHelper(CompoundTag nbt) {
@@ -113,7 +125,7 @@ public class TrashcanFluidHelper extends FluidHandlerHelper {
         }
 
         @Override
-        public CompoundTag serialize(CompoundTag nbt) {
+        protected CompoundTag serialize(CompoundTag nbt) {
             nbt.putBoolean("whiteOrBlack",whiteOrBlack);
             ListTag filterTag = new ListTag();
             filter.forEach((stack) -> filterTag.add(stack.writeToNBT(new CompoundTag())));
@@ -133,13 +145,21 @@ public class TrashcanFluidHelper extends FluidHandlerHelper {
         public void doSomething(BlockEntity entity) {}
 
         @Override
-        public void finallyDo() {
-            List<ItemStack> toolboxItem = new ArrayList<>();
-            for(BlockEntity entity : BlockEntityList)
-                if(entity instanceof ToolboxBlockEntity){
-                    toolboxItem.addAll(NBTHelper.readItemList(entity.serializeNBT().getCompound("Inventory").getList("Compartments", Tag.TAG_COMPOUND)));
+        public void finallyDo() {}
+
+        @Override
+        public void finallyDo(Map<BlockPos, MountedFluidStorage> fluidBuilder, Map<BlockPos, MountedItemStorage> itemsBuilder) {
+            ArrayList<FluidStack> toolboxFluid = new ArrayList<>();
+            for(MountedItemStorage storage : itemsBuilder.values())
+                if(storage instanceof ToolboxMountedStorage toolboxMountedStorage){
+                    List<FluidStack> fluids;
+                    for (int slot = 0; slot < toolboxMountedStorage.getSlots(); slot += ToolboxInventory.STACKS_PER_COMPARTMENT) {
+                        fluids = Utils.getFluidByItem(toolboxMountedStorage.getStackInSlot(slot));
+                        if (fluids != null)
+                            toolboxFluid.addAll(fluids);
+                    }
                 }
-            this.toolboxFluid = toolboxItem.stream().filter((item)->!item.isEmpty()).collect(ArrayList::new,(fluid,item)-> fluid.addAll(getFluidByItem(item)), ArrayList::addAll);
+            this.toolboxFluid = toolboxFluid.stream().filter((item)->!item.isEmpty()).toList();
         }
     }
 }

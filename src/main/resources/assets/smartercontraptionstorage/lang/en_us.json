@@ -12,7 +12,7 @@
   "smartercontraptionstorage.ponder.trash_control.text_1": "Normally, every item will be deleted if there is no any other containers except trashcan",
   "smartercontraptionstorage.ponder.trash_control.text_2": "( no drops are spawned ...)",
   "smartercontraptionstorage.ponder.trash_control.text_3": "Although we can use the filter trashcan provided to us, it may not enough to use. And also, any items matches contents in toolbox we wouldn't want them be deleted, so we can use toolbox as an extended black filter. Let's see how to use it",
-  "smartercontraptionstorage.ponder.trash_control.text_4": "If we add cobblestone to our toolbox (actually, only need to set it's filter)",
+  "smartercontraptionstorage.ponder.trash_control.text_4": "If we add cobblestone to our toolbox (actually, only need to set it's filter, but here for ease of presentation, we fill up toolbox with cobblestone)",
   "smartercontraptionstorage.ponder.trash_control.text_5": "Then this cobblestone will drop on the ground rather than deleted by trashcan (toolbox can be anywhere on contraption, don't need to place near trashcan)",
   "smartercontraptionstorage.ponder.replenish_item.header": "Use toolbox to replenish item to your hotbar",
   "smartercontraptionstorage.ponder.replenish_item.text_1": "You may usually use minecart to help mining ores",

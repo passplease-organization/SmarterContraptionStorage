@@ -139,7 +139,7 @@ public abstract class StorageHandlerHelper implements SerializableHandler<ItemSt
         }
         @Override
         public int getStackLimit(int slot, @NotNull ItemStack stack){
-            if(Utils.isSameItem(items[slot],stack))
+            if(Utils.isSameItemSameTags(items[slot],stack))
                 return slotLimits[slot];
             else return 0;
         }

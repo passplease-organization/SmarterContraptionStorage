@@ -56,7 +56,7 @@ public class ToolboxBehaviour implements MovementBehaviour {
         ItemStack item;
         for(ItemStack playerItem : playerItems){
             for(ItemStack filterItem : filterItems){
-                if(Utils.isSameItem(playerItem,filterItem)){
+                if(Utils.isSameItemSameTags(playerItem,filterItem)){
                     halfMaxSize = playerItem.getMaxStackSize() / 2;
                     if(halfMaxSize == 0)
                         continue;
@@ -67,7 +67,7 @@ public class ToolboxBehaviour implements MovementBehaviour {
                         halfMaxSize += ItemHandlerHelper.insertItem(context.contraption.getStorage().getAllItems(),item,false).getCount();
                         playerItem.setCount(halfMaxSize);
                     }else if(count < halfMaxSize){
-                        count += ItemHelper.extract(context.contraption.getStorage().getAllItems(), (stack) -> Utils.isSameItem(playerItem,stack),halfMaxSize - count,false).getCount();
+                        count += ItemHelper.extract(context.contraption.getStorage().getAllItems(), (stack) -> Utils.isSameItemSameTags(playerItem,stack),halfMaxSize - count,false).getCount();
                         playerItem.setCount(count);
                     }
                 }
@@ -77,9 +77,4 @@ public class ToolboxBehaviour implements MovementBehaviour {
     public static void sendMessage(String key,Player player){
         Lang.builder(SmarterContraptionStorage.MODID).translate(key).style(ChatFormatting.GOLD).sendStatus(player);
     }
-    // TODO 还能在presentBlockEntity里找到吗
-//    @Override
-//    public boolean renderAsNormalBlockEntity() {
-//        return true;
-//    }
 }

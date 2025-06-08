@@ -12,13 +12,14 @@ import net.p3pp3rf1y.sophisticatedbackpacks.backpack.BackpackBlockEntity;
 import net.p3pp3rf1y.sophisticatedbackpacks.backpack.BackpackItem;
 import org.jetbrains.annotations.NotNull;
 
+@Deprecated
 public class SBackPacksFluidHandlerHelper extends FluidHandlerHelper{
     @Override
-    public void addStorageToWorld(BlockEntity entity, SmartFluidTank helper) {
-        assert canCreateHandler(entity);
+    public void addStorageToWorld(BlockEntity entity, IFluidHandler tank) {
+        assert canCreateHandler(entity) && tank instanceof SmartFluidTank;
         ((BackpackBlockEntity)entity).getStorageWrapper().getFluidHandler().ifPresent(handler -> {
             handler.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.EXECUTE);
-            handler.fill(helper.getFluidInTank(0), IFluidHandler.FluidAction.EXECUTE);
+            handler.fill(tank.getFluidInTank(0), IFluidHandler.FluidAction.EXECUTE);
         });
     }
 
@@ -38,9 +39,16 @@ public class SBackPacksFluidHandlerHelper extends FluidHandlerHelper{
     }
 
     @Override
-    public @NotNull SmartFluidTank createHandler(BlockEntity entity) {
+    public @NotNull IFluidHandler createHandler(BlockEntity entity) {
         assert canCreateHandler(entity);
         return new BackPackFluidHelper(((BackpackBlockEntity)entity).getBackpackWrapper().getFluidHandler().get());
+    }
+
+    @Override
+    public @NotNull CompoundTag serializeNBT(IFluidHandler handler) {
+        if(handler instanceof BackPackFluidHelper backpack){
+            return backpack.writeToNBT(new CompoundTag());
+        }else return new CompoundTag();
     }
 
     @Override
@@ -81,7 +89,7 @@ public class SBackPacksFluidHandlerHelper extends FluidHandlerHelper{
         }
 
         @Override
-        public CompoundTag serialize(CompoundTag nbt) {
+        protected CompoundTag serialize(CompoundTag nbt) {
             return nbt;
         }
     }

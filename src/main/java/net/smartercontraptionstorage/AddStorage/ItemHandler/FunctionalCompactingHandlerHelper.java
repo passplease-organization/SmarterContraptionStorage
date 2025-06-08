@@ -146,7 +146,7 @@ public class FunctionalCompactingHandlerHelper extends StorageHandlerHelper{
         public boolean canInsert(int slot, @NotNull ItemStack stack) {
             if(stack.isEmpty())
                 return false;
-            return Utils.isSameItem(items[slot],stack);
+            return Utils.isSameItemSameTags(items[slot],stack);
         }
         public void addCountInSlot(int slot, int count){
             amount += count * needed[slot];

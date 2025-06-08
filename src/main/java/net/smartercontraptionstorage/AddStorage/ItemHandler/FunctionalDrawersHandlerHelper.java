@@ -129,7 +129,7 @@ public class FunctionalDrawersHandlerHelper extends StorageHandlerHelper{
             assert upgrades.size() == 7;
         }
         public boolean canInsert(int slot,@NotNull ItemStack stack){
-            return !stack.isEmpty() && (Utils.isSameItem(items[slot],stack) || items[slot].is(Items.AIR));
+            return !stack.isEmpty() && (Utils.isSameItemSameTags(items[slot],stack) || items[slot].is(Items.AIR));
         }
         public void setCountInSlot(int slot, @NotNull ItemStack stack, int count){
             if(isItemEmpty(slot))

@@ -1,5 +1,6 @@
 package net.smartercontraptionstorage.AddStorage.ItemHandler;
 
+import com.simibubi.create.api.contraption.storage.item.MountedItemStorage;
 import com.simibubi.create.api.contraption.storage.item.WrapperMountedItemStorage;
 import com.simibubi.create.content.contraptions.Contraption;
 import net.minecraft.core.BlockPos;
@@ -18,6 +19,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
+
 public class MovingItemStorage extends WrapperMountedItemStorage<ItemStackHandler> {
     public final @NonNull StorageHandlerHelper helper;
 
@@ -30,9 +33,7 @@ public class MovingItemStorage extends WrapperMountedItemStorage<ItemStackHandle
 
     @Override
     public void unmount(Level level, BlockState blockState, BlockPos blockPos, @Nullable BlockEntity blockEntity) {
-        if(helper.canCreateHandler(blockEntity)) {
-            helper.addStorageToWorld(blockEntity, getHandler());
-        } else helper.addStorageToWorld(this.blockEntity, getHandler());
+        helper.addStorageToWorld(helper.canCreateHandler(blockEntity) ? blockEntity : this.blockEntity,getHandler());
     }
 
     public ItemStackHandler getHandler() {
@@ -74,17 +75,17 @@ public class MovingItemStorage extends WrapperMountedItemStorage<ItemStackHandle
         return null;
     }
 
-    public void doSomething() {
+    public void doSomething(Map<BlockPos, MountedItemStorage> itemsBuilder) {
         NeedDealWith deal = getDeal();
         if(deal != null) {
-            deal.doSomething(blockEntity);
+            deal.doSomething(blockEntity,itemsBuilder);
         }
     }
 
-    public void finallyDo() {
+    public void finallyDo(Map<BlockPos, MountedItemStorage> itemsBuilder) {
         NeedDealWith deal = getDeal();
         if(deal != null) {
-            deal.finallyDo();
+            deal.finallyDo(itemsBuilder);
         }
     }
 }

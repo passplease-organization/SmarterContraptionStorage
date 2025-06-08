@@ -1,8 +1,10 @@
-package net.smartercontraptionstorage.AddStorage.ItemHandler;
+package net.smartercontraptionstorage.AddStorage.FluidHander;
 
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.*;
-import com.simibubi.create.api.contraption.storage.item.MountedItemStorageType;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.simibubi.create.api.contraption.storage.fluid.MountedFluidStorageType;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -13,7 +15,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.smartercontraptionstorage.AddStorage.ItemHandler.MovingItemStorageType;
 import net.smartercontraptionstorage.FunctionChanger;
 import net.smartercontraptionstorage.SmarterContraptionStorage;
 import net.smartercontraptionstorage.Utils;
@@ -22,23 +25,24 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
-public class MovingItemStorageType extends MountedItemStorageType<MovingItemStorage> {
-    public static final String TAG = "localPos";
-    public static final RegistryEntry<MovingItemStorageType> HELPER_STORAGE = SmarterContraptionStorage.REGISTRATE.mountedItemStorage("helper_storage",MovingItemStorageType::new).register();
-    public static final Codec<MovingItemStorage> CODEC = new Codec<>() {
+public class MovingFluidStorageType extends MountedFluidStorageType<MovingFluidStorage> {
+    
+    public static final RegistryEntry<MovingFluidStorageType> HELPER_STORAGE = SmarterContraptionStorage.REGISTRATE.mountedFluidStorage("helper_fluid_storage",MovingFluidStorageType::new).register();
+    
+    public static final Codec<MovingFluidStorage> CODEC = new Codec<>(){
         @Override
-        public <T> DataResult<Pair<MovingItemStorage, T>> decode(DynamicOps<T> ops, T input) {
-            if(ops.convertTo(NbtOps.INSTANCE, input) instanceof CompoundTag nbt && nbt.contains("helper")) {
-                StorageHandlerHelper helper = StorageHandlerHelper.findByName(nbt.getString("helper"));
+        public <T> DataResult<Pair<MovingFluidStorage, T>> decode(DynamicOps<T> ops, T input) {
+            if(ops.convertTo(NbtOps.INSTANCE, input) instanceof CompoundTag nbt) {
+                FluidHandlerHelper helper = FluidHandlerHelper.findByName(nbt.getString("helper"));
                 try {
-                    ItemStackHandler handler = null;
-                    BlockEntity blockEntity = FunctionChanger.getBlockEntity(NbtUtils.readBlockPos(nbt.getCompound(TAG)));
+                    IFluidHandler handler = null;
+                    BlockEntity blockEntity = FunctionChanger.getBlockEntity(NbtUtils.readBlockPos(nbt.getCompound(MovingItemStorageType.TAG)));
                     if(helper.canDeserialize()) {
                         handler = helper.deserialize(nbt);
                     }else if(helper.canCreateHandler(blockEntity)){
                         handler = helper.createHandler(blockEntity);
                     }
-                    MovingItemStorage storage = new MovingItemStorage(handler, helper);
+                    MovingFluidStorage storage = new MovingFluidStorage(handler, helper);
                     storage.blockEntity = blockEntity;
                     return DataResult.success(new Pair<>(storage,input));
                 } catch (IllegalAccessException ignored) {
@@ -49,10 +53,10 @@ public class MovingItemStorageType extends MountedItemStorageType<MovingItemStor
         }
 
         @Override
-        public <T> DataResult<T> encode(MovingItemStorage input, DynamicOps<T> ops, T prefix) {
+        public <T> DataResult<T> encode(MovingFluidStorage input, DynamicOps<T> ops, T prefix) {
             CompoundTag nbt;
             if(input.helper.canDeserialize()) {
-                nbt = input.getHandler().serializeNBT();
+                nbt = input.getHelper().serializeNBT(input.getHandler());
             }else {
                 input.helper.addStorageToWorld(Objects.requireNonNull(input.blockEntity), input.getHandler());
                 nbt = new CompoundTag();
@@ -61,35 +65,36 @@ public class MovingItemStorageType extends MountedItemStorageType<MovingItemStor
             return DataResult.success(NbtOps.INSTANCE.convertTo(ops, nbt));
         }
     };
-    protected MovingItemStorageType() {
+    
+    protected MovingFluidStorageType() {
         super(CODEC);
     }
 
     @Override
-    public @Nullable MovingItemStorage mount(Level level, BlockState blockState, BlockPos blockPos, @Nullable BlockEntity blockEntity) {
-        StorageHandlerHelper helper = StorageHandlerHelper.findSuitableHelper(blockEntity);
+    public @Nullable MovingFluidStorage mount(Level level, BlockState blockState, BlockPos blockPos, @Nullable BlockEntity blockEntity) {
+        FluidHandlerHelper helper = FluidHandlerHelper.findSuitableHelper(blockEntity);
         if(helper == null)
             return null;
-        return new MovingItemStorage(helper.createHandler(blockEntity), helper);
+        return new MovingFluidStorage(helper.createHandler(blockEntity), helper);
     }
 
     public static void load(){}
 
-    public static void register() {
+    public static void register(){
         BuiltInRegistries.BLOCK.stream().filter(block -> {
-            for (StorageHandlerHelper handlerHelper : StorageHandlerHelper.getHandlerHelpers()){
-                if(handlerHelper.allowControl(block))
+            for (FluidHandlerHelper handlerHelper : FluidHandlerHelper.getHandlerHelpers()){
+                if(handlerHelper.canCreateHandler(block))
                     return true;
             }
             return false;
-        }).forEach(MovingItemStorageType::register);
+        }).forEach(MovingFluidStorageType::register);
     }
 
     public static void registerTrashCan() {
         try{
             Class<?> trashcan = com.supermartijn642.trashcans.TrashCans.class;
 
-            Field item_trash_can = trashcan.getDeclaredField("item_trash_can");
+            Field item_trash_can = trashcan.getDeclaredField("liquid_trash_can");
             register((Block) item_trash_can.get(trashcan));
 
             Field ultimate_trash_can = trashcan.getDeclaredField("ultimate_trash_can");
@@ -102,6 +107,6 @@ public class MovingItemStorageType extends MountedItemStorageType<MovingItemStor
     }
 
     private static void register(Block block){
-        MountedItemStorageType.REGISTRY.register(block, HELPER_STORAGE.get());
+        MovingFluidStorageType.REGISTRY.register(block, HELPER_STORAGE.get());
     }
 }

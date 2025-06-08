@@ -95,7 +95,7 @@ public class ToolboxScenes {
         scene.addKeyframe();
         scene.overlay().showText(150).placeNearTarget().pointAt(util.vector().topOf(trashcan).add(0,-0.25,0)).text("Although we can use the filter trashcan provided to us, it may not enough to use. And also, any items matches contents in toolbox we wouldn't want them be deleted, so we can use toolbox as an extended black filter. Let's see how to use it");
         scene.idle(160);
-        scene.overlay().showText(70).placeNearTarget().pointAt(util.vector().centerOf(toolbox)).text("If we add cobblestone to our toolbox (actually, only need to set it's filter)");
+        scene.overlay().showText(70).placeNearTarget().pointAt(util.vector().centerOf(toolbox)).text("If we add cobblestone to our toolbox (actually, only need to set it's filter, but here for ease of presentation, we fill up toolbox with cobblestone)");
         scene.idle(30);
         scene.overlay().showControls(util.vector().centerOf(toolbox),Pointing.UP,40).withItem(Items.COBBLESTONE.getDefaultInstance());
         scene.idle(45);

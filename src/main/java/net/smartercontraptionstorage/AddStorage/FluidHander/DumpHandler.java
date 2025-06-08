@@ -26,27 +26,31 @@ public final class DumpHandler extends ItemStackHandler {
 
     @Override
     public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-        if(isOpened()){
-            if(stack.getItem() instanceof BucketItem) {
-                FluidStack fluidHandler = Utils.getFluidByItem(stack).get(0);
-                if (fluidInventory.fill(fluidHandler, IFluidHandler.FluidAction.SIMULATE) == 0)
-                    fluidInventory.fill(fluidHandler, IFluidHandler.FluidAction.EXECUTE);
-                else return stack;
+        if(stack.getItem() instanceof BucketItem) {
+            FluidStack fluidStack = Utils.getFluidByItem(stack).get(0);
+            if (fluidInventory.drain(fluidStack, IFluidHandler.FluidAction.SIMULATE).isEmpty()) {
+                if(!simulate)
+                    fluidInventory.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
                 return Items.BUCKET.getDefaultInstance();
-            }else Utils.forEachTankDo(stack,handler -> {
+            } else return stack;
+        }else {
+            stack = stack.copy();
+            Utils.forEachTankDo(stack, handler -> {
                 FluidStack dumped;
                 int dumpedCount;
                 for (int i = 0; i < handler.getTanks(); i++) {
                     dumped = handler.getFluidInTank(i).copy();
-                    dumped.setAmount(handler.drain(dumped, IFluidHandler.FluidAction.SIMULATE).getAmount());
                     // Something like MEK cannot drain all fluid in cans
-                    dumpedCount = fluidInventory.fill(dumped, IFluidHandler.FluidAction.EXECUTE);
-                    dumped.setAmount(dumpedCount);
-                    handler.drain(dumped, IFluidHandler.FluidAction.EXECUTE);
+                    if (!simulate) {
+                        dumpedCount = fluidInventory.drain(dumped, IFluidHandler.FluidAction.EXECUTE).getAmount();
+                    } else {
+                        dumpedCount = fluidInventory.drain(dumped, IFluidHandler.FluidAction.SIMULATE).getAmount();
+                    }
+                    handler.getFluidInTank(i).shrink(dumpedCount);
                 }
             });
+            return stack;
         }
-        return stack;
     }
 
     @Override

@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.smartercontraptionstorage.AddStorage.SerializableHandler;
 import net.smartercontraptionstorage.Utils;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +21,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public abstract class FluidHandlerHelper implements SerializableHandler<SmartFluidTank> {
+public abstract class FluidHandlerHelper implements SerializableHandler<IFluidHandler> {
     public static final String DESERIALIZE_MARKER = "FluidHandlers";
     public static final SmartFluidTank NULL_HANDLER = new SmartFluidTank(0,null){
         @Override
@@ -46,6 +47,7 @@ public abstract class FluidHandlerHelper implements SerializableHandler<SmartFlu
     /**
      * Due to we can only add one tank to the contraption for each entity, so we add DefaultSlot of muti-slots entity
      * */
+    @Deprecated
     public static final int DefaultSlot = 0;
     protected static final ArrayList<BlockEntity> BlockEntityList = new ArrayList<>();
     public static boolean canUseAsStorage(@NotNull Item comparedItem){
@@ -94,16 +96,14 @@ public abstract class FluidHandlerHelper implements SerializableHandler<SmartFlu
     public static void clearData() {
         BlockEntityList.clear();
     }
-
-    public boolean sendPacket(){
-        return false;
-    }
+    @Deprecated
     public void tick(Entity entity, BlockPos pos, boolean isRemote){}
-    public abstract void addStorageToWorld(BlockEntity entity,SmartFluidTank helper);
+    public abstract void addStorageToWorld(BlockEntity entity, IFluidHandler tank);
     public abstract boolean canCreateHandler(Item comparedItem);
     public abstract boolean canCreateHandler(Block block);
     public abstract boolean canCreateHandler(BlockEntity entity);
-    public abstract @NotNull SmartFluidTank createHandler(BlockEntity entity);
+    public abstract @NotNull IFluidHandler createHandler(BlockEntity entity);
+    public abstract @NotNull CompoundTag serializeNBT(IFluidHandler handler);
     public static Set<FluidHandlerHelper> getHandlerHelpers() {
         return HandlerHelpers;
     }
@@ -148,7 +148,7 @@ public abstract class FluidHandlerHelper implements SerializableHandler<SmartFlu
             tag.putInt("capacity",capacity);
             return tag;
         }
-        public abstract CompoundTag serialize(CompoundTag nbt);
+        protected abstract CompoundTag serialize(CompoundTag nbt);
         @Override
         public int getFluidAmount() {
             return getAmount();

@@ -88,7 +88,7 @@ public class CompactingHandlerHelper extends DrawersHandlerHelper{
         }
         @Override
         public boolean canInsert(int slot, ItemStack stack) {
-            return !stack.isEmpty() && conversionRate[slot] > 0 && Utils.isSameItem(items[slot],stack);
+            return !stack.isEmpty() && conversionRate[slot] > 0 && Utils.isSameItemSameTags(items[slot],stack);
         }
         @Override
         public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {

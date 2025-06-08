@@ -42,7 +42,7 @@ jobs:
 
       - name: Create timestamp
         id: create_timestamp
-        run: echo "timestamp=$(date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_OUTPUT
+        run: echo "timestamp=$(date '+%Y-%m-%d-%H')" >> $GITHUB_OUTPUT
         shell: bash
 
       - uses: Kir-Antipov/mc-publish@v3.3
@@ -58,7 +58,7 @@ jobs:
           include-hidden-files: true
           path: |
             **/logs/
-            */crash-reports/
+            **/crash-reports/
             build/libs
           retention-days: 7
         if: always()

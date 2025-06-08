@@ -136,6 +136,9 @@ public final class Utils {
         LOGGER.error(text);
     }
     public static boolean isSameItem(ItemStack stack1,ItemStack stack2){
+        return ItemStack.isSameItem(stack1, stack2);
+    }
+    public static boolean isSameItemSameTags(ItemStack stack1, ItemStack stack2){
         return ItemStack.isSameItemSameTags(stack1, stack2);
     }
     public static boolean isItemEmpty(ItemStack stack){

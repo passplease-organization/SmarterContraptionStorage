@@ -12,7 +12,7 @@
   "smartercontraptionstorage.ponder.trash_control.text_1": "一般而言，如果没有除了垃圾桶以外的容器，所有物品都会被销毁",
   "smartercontraptionstorage.ponder.trash_control.text_2": "（ 果然，没有掉落物产生 …… ）",
   "smartercontraptionstorage.ponder.trash_control.text_3": "虽然我们可以使用垃圾桶自己提供的过滤器，但是那有可能不足以使用，而且我们也不想任何可以存储在工具箱内的物品被删除，所以我们也可以把工具箱作为额外黑名单使用。下面让我们来看看怎么使用吧",
-  "smartercontraptionstorage.ponder.trash_control.text_4": "如果我们往工具箱中添加一些圆石（事实上，只需要设置其过滤槽，不一定真正要装上圆石）",
+  "smartercontraptionstorage.ponder.trash_control.text_4": "如果我们往工具箱中添加一些圆石（事实上，只需要设置其过滤槽，不一定真正要装上圆石。不过这里为了方便掩饰，我们将工具箱装满圆石）",
   "smartercontraptionstorage.ponder.trash_control.text_5": "然后我们的圆石就会掉在地上，而不是被垃圾桶销毁（工具箱可以在动态结构上的任何地方，而不必和垃圾桶相邻）",
   "smartercontraptionstorage.ponder.replenish_item.header": "使用工具箱为您的物品栏补货",
   "smartercontraptionstorage.ponder.replenish_item.text_1": "您可能经常使用矿车帮助挖矿",
