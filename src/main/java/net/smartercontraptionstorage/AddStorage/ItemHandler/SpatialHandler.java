@@ -7,13 +7,13 @@ import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.blockentity.networking.CreativeEnergyCellBlockEntity;
 import appeng.blockentity.networking.EnergyCellBlockEntity;
 import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
+import appeng.core.definitions.AEBlocks;
 import appeng.spatial.SpatialStoragePlot;
 import appeng.spatial.SpatialStoragePlotManager;
 import com.simibubi.create.content.logistics.vault.ItemVaultBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -30,6 +30,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public class SpatialHandler extends StorageHandlerHelper{
     @Override
@@ -67,6 +68,11 @@ public class SpatialHandler extends StorageHandlerHelper{
     @Override
     public boolean allowControl(Block block) {
         return false;
+    }
+
+    @Override
+    public void registerBlock(Consumer<Block> register) {
+        register.accept(AEBlocks.SPATIAL_IO_PORT.block());
     }
 
     @Override
@@ -130,12 +136,17 @@ public class SpatialHandler extends StorageHandlerHelper{
                         pos = new BlockPos(x,y,z);
                         entity = level.getBlockEntity(pos);
                         if(entity != null && Utils.canUseCreateInventory(entity.getBlockState().getBlock())) {
-                            handler = entity.getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(IllegalStateException::new);
-                            if (entity instanceof ItemVaultBlockEntity)
+                            boolean isVault = entity instanceof ItemVaultBlockEntity;
+                            handler = entity.getCapability(ForgeCapabilities.ITEM_HANDLER).orElseGet(() -> {
+                                if(isVault)
+                                    return NULL_HANDLER;
+                                else throw new IllegalStateException("Can't find Handler for block entity");
+                            });
+                            if (isVault)
                                 insertHandlers.add(handler);
                             else {
                                 exportHandlers.add(handler);
-                                edge += handler.getSlots() - 1;
+                                edge += handler.getSlots();
                             }
                             size += handler.getSlots();
                         }

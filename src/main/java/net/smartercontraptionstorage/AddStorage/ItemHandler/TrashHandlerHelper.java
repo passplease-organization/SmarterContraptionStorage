@@ -4,6 +4,7 @@ import com.simibubi.create.api.contraption.storage.item.MountedItemStorage;
 import com.simibubi.create.content.equipment.toolbox.ToolboxInventory;
 import com.simibubi.create.content.equipment.toolbox.ToolboxMountedStorage;
 import com.supermartijn642.trashcans.TrashCanBlockEntity;
+import com.supermartijn642.trashcans.TrashCans;
 import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class TrashHandlerHelper extends StorageHandlerHelper{
     public static final String NAME = "TrashHandlerHelper";
@@ -60,6 +62,11 @@ public class TrashHandlerHelper extends StorageHandlerHelper{
     @Override
     public boolean allowControl(Block block) {
         return false;
+    }
+    @Override
+    public void registerBlock(Consumer<Block> register) {
+        register.accept(TrashCans.item_trash_can);
+        register.accept(TrashCans.ultimate_trash_can);
     }
     @Override
     public String getName() {

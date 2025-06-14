@@ -1,5 +1,6 @@
 package net.smartercontraptionstorage.AddStorage.ItemHandler;
 
+import com.buuz135.functionalstorage.FunctionalStorage;
 import com.buuz135.functionalstorage.block.DrawerBlock;
 import com.buuz135.functionalstorage.block.tile.DrawerTile;
 import com.buuz135.functionalstorage.inventory.BigInventoryHandler;
@@ -30,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import static com.buuz135.functionalstorage.inventory.BigInventoryHandler.*;
 
@@ -76,6 +78,15 @@ public class FunctionalDrawersHandlerHelper extends StorageHandlerHelper{
     @Override
     public boolean allowControl(Block block) {
         return block instanceof DrawerBlock;
+    }
+
+    @Override
+    public void registerBlock(Consumer<Block> register) {
+        FunctionalStorage.DRAWER_TYPES.forEach((type,list) -> {
+            list.forEach(drawer -> {
+                register.accept(drawer.getLeft().get());
+            });
+        });
     }
 
     @Override

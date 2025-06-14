@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Consumer;
 
 public abstract class StorageHandlerHelper implements SerializableHandler<ItemStackHandler>{
     public static final String DESERIALIZE_MARKER = "OtherHandlers";
@@ -97,6 +98,7 @@ public abstract class StorageHandlerHelper implements SerializableHandler<ItemSt
     public abstract @NotNull ItemStackHandler createHandler(BlockEntity entity);
     public abstract boolean allowControl(Item comparedItem);
     public abstract boolean allowControl(Block block);
+    public abstract void registerBlock(Consumer<Block> register);
     // two allowDumping only need to achieve one, another can return false
     public static Set<StorageHandlerHelper> getHandlerHelpers() {
         return HandlerHelpers;

@@ -5,7 +5,6 @@ import com.mojang.serialization.*;
 import com.simibubi.create.api.contraption.storage.item.MountedItemStorageType;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
@@ -19,7 +18,6 @@ import net.smartercontraptionstorage.SmarterContraptionStorage;
 import net.smartercontraptionstorage.Utils;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Field;
 import java.util.Objects;
 
 public class MovingItemStorageType extends MountedItemStorageType<MovingItemStorage> {
@@ -38,8 +36,7 @@ public class MovingItemStorageType extends MountedItemStorageType<MovingItemStor
                     }else if(helper.canCreateHandler(blockEntity)){
                         handler = helper.createHandler(blockEntity);
                     }
-                    MovingItemStorage storage = new MovingItemStorage(handler, helper);
-                    storage.blockEntity = blockEntity;
+                    MovingItemStorage storage = new MovingItemStorage(handler,helper,blockEntity);
                     return DataResult.success(new Pair<>(storage,input));
                 } catch (IllegalAccessException ignored) {
                     Utils.addError("Helper cannot create handler : " + helper.getName());
@@ -70,35 +67,13 @@ public class MovingItemStorageType extends MountedItemStorageType<MovingItemStor
         StorageHandlerHelper helper = StorageHandlerHelper.findSuitableHelper(blockEntity);
         if(helper == null)
             return null;
-        return new MovingItemStorage(helper.createHandler(blockEntity), helper);
+        return new MovingItemStorage(helper.createHandler(blockEntity),helper,blockEntity);
     }
 
     public static void load(){}
 
     public static void register() {
-        BuiltInRegistries.BLOCK.stream().filter(block -> {
-            for (StorageHandlerHelper handlerHelper : StorageHandlerHelper.getHandlerHelpers()){
-                if(handlerHelper.allowControl(block))
-                    return true;
-            }
-            return false;
-        }).forEach(MovingItemStorageType::register);
-    }
-
-    public static void registerTrashCan() {
-        try{
-            Class<?> trashcan = com.supermartijn642.trashcans.TrashCans.class;
-
-            Field item_trash_can = trashcan.getDeclaredField("item_trash_can");
-            register((Block) item_trash_can.get(trashcan));
-
-            Field ultimate_trash_can = trashcan.getDeclaredField("ultimate_trash_can");
-            register((Block) ultimate_trash_can.get(trashcan));
-        } catch (NoSuchFieldException e) {
-            Utils.addError("Unchecked Trash Can register !");
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        StorageHandlerHelper.getHandlerHelpers().forEach(handler -> handler.registerBlock(MovingItemStorageType::register));
     }
 
     private static void register(Block block){

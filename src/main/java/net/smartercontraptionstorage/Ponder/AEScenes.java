@@ -42,12 +42,12 @@ public class AEScenes {
         scene.world().showSectionAndMerge(util.select().position(3,1,2),DOWN,contraption);
         scene.idle(5);
         scene.world().showSectionAndMerge(util.select().fromTo(exportBus,importBus),UP,contraption);
-        scene.idle(5);
+        scene.idle(25);
         scene.overlay().showText(40).placeNearTarget().pointAt(util.vector().topOf(exportBus)).text("Export Bus, with covered_cable");
         scene.overlay().showText(40).placeNearTarget().pointAt(util.vector().topOf(importBus)).text("Import Bus, with covered_cable");
         scene.idle(5);
         scene.world().modifyBlockEntity(util.grid().at(2,1,2), ControllerBlockEntity.class,entity -> Objects.requireNonNull(entity.getLevel()).setBlockAndUpdate(entity.getBlockPos(), entity.getBlockState().setValue(ControllerBlock.CONTROLLER_STATE, ControllerBlock.ControllerBlockState.online)));
-        scene.idle(35);
+        scene.idle(45);
         scene.overlay().showText(100).pointAt(util.vector().topOf(importBus)).placeNearTarget().attachKeyFrame().text("These bus is important for contraptions to locate the proper AE Net of the world. And due to the input and output AE Net can be different, so you should set them all");
         scene.idle(110);
         scene.overlay().showControls(util.vector().topOf(importBus), Pointing.DOWN,50).withItem(AEItems.WIRELESS_CRAFTING_TERMINAL.stack());
@@ -72,11 +72,11 @@ public class AEScenes {
             scene.world().incrementBlockBreakingProgress(stone);
         }
         scene.world().moveSection(contraption,util.vector().of(-0.8,0,0),16);
-        scene.overlay().showText(136).placeNearTarget().pointAt(util.vector().topOf(stone)).text("Items will be stored in the AE Net which is connecting to Wireless Crafting Terminal in in Export Bus. And I have to point out, every time contraption try to insert or extract items, the energy consuming of contraption is depending on that tick AE's Channel power consuming (which will cost 6 times the energy consuming for that tick)");
+        scene.overlay().showText(136).placeNearTarget().pointAt(util.vector().topOf(stone)).text("Items will be stored in the AE Net which is connecting to Wireless Crafting Terminal in in Export Bus. And I have to point out, each action that contraption try to insert or extract items consumes energy of AE net");
         scene.idle(16);
         scene.world().modifyBlockEntity(drill, DrillBlockEntity.class,entity -> entity.setSpeed(0F));
         scene.idle(120);
-        scene.overlay().showText(80).pointAt(util.vector().topOf(2,1,2)).text("One more thing, ME Interface() can set the white filter for extracting AE Net, so that it costs less computer source (I really recommend to set that)");
+        scene.overlay().showText(80).pointAt(util.vector().topOf(2,1,2)).text("One more thing, ME Interface can set the white filter for extracting AE Net (filled with Fuzzy Card), so that it costs less computer source (I really recommend to set that)");
         scene.idle(80);
     }
     public static void spatialCell(SceneBuilder builder, SceneBuildingUtil util){
@@ -96,7 +96,7 @@ public class AEScenes {
         scene.idle(20);
         scene.world().setBlocks(machines, Blocks.AIR.defaultBlockState(),false);
         scene.idle(25);
-        scene.overlay().showText(60).placeNearTarget().pointAt(textPlace).text("Most importantly, don't extract the Storage Cell, because contraption only check the output slot of IO Port. You should move IO Port and other structure to contraption by block.");
+        scene.overlay().showText(60).placeNearTarget().pointAt(textPlace).text("Most importantly, don't take the Storage Cell out, because contraption only check the output slot of IO Port. You should move IO Port and other structure to contraption by block.");
         scene.idle(35);
         scene.world().moveSection(contraption,util.vector().of(0,1,0),25);
         scene.idle(10);
@@ -113,11 +113,11 @@ public class AEScenes {
         scene.effects().superGlue(util.grid().at(0,1,4),EAST,false);
         scene.idle(20);
         scene.world().setBlock(IO_Port.below(),AllBlocks.CART_ASSEMBLER.getDefaultState().cycle(POWERED),false);
-        scene.overlay().showText(90).pointAt(textPlace).placeNearTarget().attachKeyFrame().text("Your contraption must have the whole structure of Spatial IO Port and ensure it's powered, or else it won't work.Also, you cannot use AE Net at the same contraption with IO Port");
+        scene.overlay().showText(90).pointAt(textPlace).placeNearTarget().attachKeyFrame().text("Your contraption must have the whole structure of Spatial IO Port and ensure it's powered (when contraption assembles), or else it won't work.Also, you cannot use AE Net at the same contraption with IO Port");
         scene.idle(95);
-        scene.overlay().showText(90).pointAt(textPlace).placeNearTarget().text("You can put some machines in the Spatial Cell, and the Chunks will be loaded until you destroy this contraption");
-        scene.idle(95);
-        scene.overlay().showText(70).pointAt(textPlace).placeNearTarget().text("You can use Chest, Trapped Chest and Barrel as the output interface and Vault as the input interface");
+        scene.overlay().showText(120).pointAt(textPlace).placeNearTarget().text("You can put some machines in the Spatial Cell, and the Chunks will be loaded until you destroy this contraption. But, I highly recommend you check block status in the cell and ensure they could work normally, because unloaded packaged block most likely have a wrong block status and looks like unticked");
+        scene.idle(125);
+        scene.overlay().showText(70).pointAt(textPlace).placeNearTarget().text("You can use Chest, Trapped Chest and Barrel as the output interface of cell and Vault as the input interface of cell");
         scene.idle(75);
         scene.overlay().showText(90).pointAt(textPlace).placeNearTarget().text("By this way, you can add some product line on your contraption for replenishing stuffs to your contraption or use other mods' container indirectly");
         scene.idle(95);

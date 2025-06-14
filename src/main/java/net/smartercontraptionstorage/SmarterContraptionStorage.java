@@ -147,7 +147,6 @@ public class SmarterContraptionStorage {
                 register(new CobblestoneGenerator());
         }
         if(list.isLoaded(TrashCans)) {
-            MovingItemStorageType.registerTrashCan();
             MovingFluidStorageType.registerTrashCan();
         }
         MovingItemStorageType.register();

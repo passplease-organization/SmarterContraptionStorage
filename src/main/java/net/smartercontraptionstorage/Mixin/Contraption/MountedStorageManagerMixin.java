@@ -9,9 +9,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.smartercontraptionstorage.AddStorage.FluidHander.DumpHandler;
+import net.smartercontraptionstorage.AddStorage.FluidHander.FluidHandlerHelper;
 import net.smartercontraptionstorage.AddStorage.FluidHander.MovingFluidStorage;
 import net.smartercontraptionstorage.AddStorage.ItemHandler.MovingItemStorage;
 import net.smartercontraptionstorage.AddStorage.ItemHandler.MovingItemStorageType;
+import net.smartercontraptionstorage.AddStorage.ItemHandler.StorageHandlerHelper;
+import net.smartercontraptionstorage.AddStorage.ItemHandler.UnstorageHelper.InitializeHelper;
 import net.smartercontraptionstorage.Interface.Changeable;
 import net.smartercontraptionstorage.Settable;
 import org.jetbrains.annotations.Nullable;
@@ -41,9 +44,12 @@ public abstract class MountedStorageManagerMixin implements Changeable {
             List<MountedItemStorage> needDoSomething = itemsBuilder.values().stream().filter(storage -> storage instanceof MovingItemStorage).toList();
             needDoSomething.forEach(storage -> ((MovingItemStorage) storage).doSomething(itemsBuilder));
             needDoSomething.forEach(storage -> ((MovingItemStorage) storage).finallyDo(itemsBuilder));
+            itemsBuilder.entrySet().removeIf(storage -> storage.getValue() instanceof MovingItemStorage && ((MovingItemStorage)storage.getValue()).helper instanceof InitializeHelper);
+            StorageHandlerHelper.clearData();
             List<MountedFluidStorage> needDoSomethingFluid = fluidsBuilder.values().stream().filter(storage -> storage instanceof MovingFluidStorage).toList();
             needDoSomethingFluid.forEach(storage -> ((MovingFluidStorage) storage).doSomething(fluidsBuilder,itemsBuilder));
             needDoSomethingFluid.forEach(storage -> ((MovingFluidStorage) storage).finallyDo(fluidsBuilder,itemsBuilder));
+            FluidHandlerHelper.clearData();
         }
     }
 

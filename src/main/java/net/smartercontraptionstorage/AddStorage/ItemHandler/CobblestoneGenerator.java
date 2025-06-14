@@ -11,6 +11,8 @@ import net.minecraftforge.lex.cfd.CobbleForDays;
 import net.minecraftforge.lex.cfd.CobbleGenTile;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Consumer;
+
 public class CobblestoneGenerator extends StorageHandlerHelper{
     public static final ItemStackHandler cobblestoneGenerator = new ItemStackHandler(){
         @Override
@@ -48,6 +50,11 @@ public class CobblestoneGenerator extends StorageHandlerHelper{
     @Override
     public boolean allowControl(Block block) {
         return block == CobbleForDays.TIER5_BLOCK.get();
+    }
+
+    @Override
+    public void registerBlock(Consumer<Block> register) {
+        register.accept(CobbleForDays.TIER5_BLOCK.get());
     }
 
     @Override

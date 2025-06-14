@@ -25,6 +25,7 @@ import net.smartercontraptionstorage.Utils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class CompactingHandlerHelper extends DrawersHandlerHelper{
     @Override
@@ -50,6 +51,8 @@ public class CompactingHandlerHelper extends DrawersHandlerHelper{
     public boolean allowControl(Block block) {
         return block instanceof BlockCompDrawers;
     }
+    @Override
+    public void registerBlock(Consumer<Block> register) {}
     @Override
     public String getName() {
         return "CompactingHandlerHelper";

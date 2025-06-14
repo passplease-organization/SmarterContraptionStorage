@@ -28,6 +28,7 @@ java {
 }
 
 boolean ponderInWorkspace = rootProject.hasProperty('multiModWorkspace.ponder')
+def GameTestConfig = project.properties.get('GameTestConfig','default')
 
 legacyForge {
     version = "$minecraft_version-$forge_version"
@@ -75,7 +76,9 @@ legacyForge {
         gameTestServer {
             type = "gameTestServer"
 
-            gameDirectory = project.file('run/gametest')
+            if(GameTestConfig != 'default')
+                gameDirectory = project.file("run/gametest/${GameTestConfig}")
+            else gameDirectory = project.file('run/gametest')
         }
 
         data {
@@ -176,6 +179,23 @@ tasks.named('jar', Jar).configure {
 
     // This is the preferred method to reobfuscate your jar file
     finalizedBy 'reobfJar'
+}
+
+tasks.register("prepareGameTestConfigs", Copy) {
+    group = 'mod development'
+    description = "Copy config files for GameTestServer"
+    if(GameTestConfig != 'default') {
+        def configFiles = project.file(GameTestConfigDir)
+        if (!configFiles.exists() || !configFiles.isDirectory()) {
+            throw new GradleException("config set directory '${configFiles}' does not exist for GameTestServer. ")
+        }
+        from fileTree("${configFiles}/${GameTestConfig}")
+        into runGameTestServer.gameDirectory.file('config')
+    }
+}
+
+tasks.named('runGameTestServer', JavaExec){
+    dependsOn prepareGameTestConfigs
 }
 
 tasks.withType(JavaCompile).configureEach {

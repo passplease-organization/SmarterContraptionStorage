@@ -14,7 +14,7 @@ If you want to download code on your computer, please change gradle version in `
 * For Chinese, you can also find more links in [MCMODS](https://www.mcmod.cn/class/15306.html)
 ## About Plans
 - [x] Support 1.21.1
-- [ ] Transplant all stuff to 1.20.1 and 1.21.1
+- [x] Transplant all stuff to 1.20.1 and 1.21.1
 ## License
 [MIT_License](https://mit-license.org/)
 ## Thanks

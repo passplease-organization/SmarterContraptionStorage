@@ -14,6 +14,7 @@ import appeng.api.util.AECableType;
 import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.blockentity.networking.*;
 import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.items.tools.powered.WirelessCraftingTerminalItem;
 import appeng.me.GridNode;
@@ -35,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public class AE2BusBlockHelper extends StorageHandlerHelper{
     @Override
@@ -50,7 +52,7 @@ public class AE2BusBlockHelper extends StorageHandlerHelper{
         assert this.canCreateHandler(entity);
 
         CableBusBlockEntity bus = (CableBusBlockEntity)entity;
-        ICablePart center = (ICablePart)bus.getPart((Direction)null);
+        ICablePart center = (ICablePart)bus.getPart(null);
         if (center != null && center.getCableConnectionType() == AECableType.COVERED) {
             IGridNode exportHost = null;
             IGridNode importHost = null;
@@ -66,7 +68,7 @@ public class AE2BusBlockHelper extends StorageHandlerHelper{
                     if (key != null) {
                         ItemStack item = key.wrapForDisplayOrFilter();
                         if (item.getItem() instanceof WirelessCraftingTerminalItem terminal) {
-                            if (!checkUpgrade(terminal.getUpgrades(item), AEItems.ENERGY_CARD.asItem(),3)) {
+                            if (!checkUpgrade(terminal.getUpgrades(item), AEItems.ENERGY_CARD.asItem())) {
                                 continue;
                             }
 
@@ -132,6 +134,11 @@ public class AE2BusBlockHelper extends StorageHandlerHelper{
     @Override
     public boolean allowControl(Block block) {
         return false;
+    }
+
+    @Override
+    public void registerBlock(Consumer<Block> register) {
+        register.accept(AEBlocks.CABLE_BUS.block());
     }
 
     @Override
@@ -238,7 +245,7 @@ public class AE2BusBlockHelper extends StorageHandlerHelper{
 
         @Override
         public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if(canWork(true,simulate)) {
+            if(canWork(true,simulate) && slot < extractKeys.size()) {
                 MEStorage extractStorage = getStorage(true);
                 if (extractStorage == null)
                     return ItemStack.EMPTY;
@@ -276,7 +283,7 @@ public class AE2BusBlockHelper extends StorageHandlerHelper{
         @Override
         public int getSlots() {
             refreshStack(getStorage(true));
-            return extractKeys.size();
+            return Math.max(extractKeys.size(),1);
         }
 
         @Override
@@ -289,11 +296,7 @@ public class AE2BusBlockHelper extends StorageHandlerHelper{
             boolean controller = false,energy = false;
             for(BlockEntity entity : StorageHandlerHelper.BlockEntityList) {
                 if (entity instanceof InterfaceBlockEntity MEInterface) {
-                    IGridNode node = MEInterface.getInterfaceLogic().getActionableNode();
-                    if (node == null)
-                        continue;
-                    MEStorage storage = node.getGrid().getStorageService().getInventory();
-                    extractKeys.addAll(storage.getAvailableStacks().keySet());
+                    extractKeys.addAll(MEInterface.getInterfaceLogic().getConfig().getAvailableStacks().keySet());
                 } else if (controller || entity instanceof ControllerBlockEntity)
                     controller = true;
                 else if(energy || entity instanceof EnergyCellBlockEntity || entity instanceof CreativeEnergyCellBlockEntity)

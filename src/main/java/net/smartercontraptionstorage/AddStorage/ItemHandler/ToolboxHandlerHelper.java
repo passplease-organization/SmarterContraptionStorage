@@ -1,5 +1,6 @@
 package net.smartercontraptionstorage.AddStorage.ItemHandler;
 
+import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import com.simibubi.create.content.equipment.toolbox.*;
 import net.createmod.catnip.data.Pair;
@@ -25,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 
 @Deprecated
 public class ToolboxHandlerHelper extends StorageHandlerHelper implements NeedDealWith, HelperMenuProvider<ToolboxHandlerHelper> {
@@ -54,6 +56,11 @@ public class ToolboxHandlerHelper extends StorageHandlerHelper implements NeedDe
     @Override
     public boolean allowControl(Block block) {
         return block instanceof ToolboxBlock;
+    }
+
+    @Override
+    public void registerBlock(Consumer<Block> register) {
+        AllBlocks.TOOLBOXES.forEach(toolbox -> register.accept(toolbox.get()));
     }
 
     @Override

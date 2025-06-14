@@ -22,6 +22,7 @@ import net.p3pp3rf1y.sophisticatedbackpacks.backpack.BackpackItem;
 import net.p3pp3rf1y.sophisticatedbackpacks.client.gui.BackpackScreen;
 import net.p3pp3rf1y.sophisticatedbackpacks.common.gui.BackpackContainer;
 import net.p3pp3rf1y.sophisticatedbackpacks.common.gui.BackpackContext;
+import net.p3pp3rf1y.sophisticatedbackpacks.init.ModBlocks;
 import net.p3pp3rf1y.sophisticatedcore.inventory.InventoryHandler;
 import net.smartercontraptionstorage.AddStorage.GUI.BlockEntityMenu.HelperMenuProvider;
 import net.smartercontraptionstorage.AddStorage.GUI.BlockEntityMenu.MenuLevel;
@@ -31,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 
 @Deprecated
 public class SBackPacksHandlerHelper extends StorageHandlerHelper implements HelperMenuProvider<SBackPacksHandlerHelper> {
@@ -61,6 +63,16 @@ public class SBackPacksHandlerHelper extends StorageHandlerHelper implements Hel
     @Override
     public boolean allowControl(Block block) {
         return block instanceof BackpackBlock;
+    }
+
+    @Override
+    public void registerBlock(Consumer<Block> register) {
+        register.accept(ModBlocks.BACKPACK.get());
+        register.accept(ModBlocks.COPPER_BACKPACK.get());
+        register.accept(ModBlocks.DIAMOND_BACKPACK.get());
+        register.accept(ModBlocks.GOLD_BACKPACK.get());
+        register.accept(ModBlocks.IRON_BACKPACK.get());
+        register.accept(ModBlocks.NETHERITE_BACKPACK.get());
     }
 
     @Override

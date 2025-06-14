@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import static com.buuz135.functionalstorage.inventory.CompactingInventoryHandler.*;
 
@@ -84,6 +85,9 @@ public class FunctionalCompactingHandlerHelper extends StorageHandlerHelper{
     public boolean allowControl(Block block) {
         return block instanceof CompactingDrawerBlock || block instanceof SimpleCompactingDrawerBlock;
     }
+
+    @Override
+    public void registerBlock(Consumer<Block> register) {}
 
     @Override
     public String getName() {

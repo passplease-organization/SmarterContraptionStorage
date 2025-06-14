@@ -6,6 +6,7 @@ import com.jaquadro.minecraft.storagedrawers.block.BlockDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.BlockEntityDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.BlockEntityDrawersStandard;
 import com.jaquadro.minecraft.storagedrawers.block.tile.tiledata.UpgradeData;
+import com.jaquadro.minecraft.storagedrawers.core.ModBlocks;
 import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
@@ -30,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class DrawersHandlerHelper extends StorageHandlerHelper {
     public static final String NAME = "DrawersHandlerHelper";
@@ -69,6 +71,10 @@ public class DrawersHandlerHelper extends StorageHandlerHelper {
     @Override
     public boolean allowControl(Block block){
         return block instanceof BlockDrawers && !(block instanceof BlockCompDrawers);
+    }
+    @Override
+    public void registerBlock(Consumer<Block> register) {
+        ModBlocks.getDrawers().forEach(register);
     }
     @Override
     public String getName() {

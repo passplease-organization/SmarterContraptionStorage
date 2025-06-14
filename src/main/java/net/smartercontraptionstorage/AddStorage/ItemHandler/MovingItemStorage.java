@@ -24,11 +24,12 @@ import java.util.Map;
 public class MovingItemStorage extends WrapperMountedItemStorage<ItemStackHandler> {
     public final @NonNull StorageHandlerHelper helper;
 
-    public BlockEntity blockEntity;
+    public final BlockEntity blockEntity;
 
-    public MovingItemStorage(ItemStackHandler handler, @NotNull StorageHandlerHelper helper) {
+    public MovingItemStorage(ItemStackHandler handler, @NotNull StorageHandlerHelper helper,BlockEntity blockEntity) {
         super(MovingItemStorageType.HELPER_STORAGE.get(), handler);
         this.helper = helper;
+        this.blockEntity = blockEntity;
     }
 
     @Override
