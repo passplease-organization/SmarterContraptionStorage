@@ -1,6 +1,5 @@
 package Excludes.Scenes;
 
-import Excludes.CreateNBTFile;
 import com.simibubi.create.AllBlocks;
 import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.core.BlockPos;
@@ -18,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static Excludes.CreateNBTFile.Facing.*;
+import static Excludes.Scenes.CreateNBTFile.Facing.*;
 
 public class replenish_item extends CreateNBTFile {
     public replenish_item(@NotNull String name) {

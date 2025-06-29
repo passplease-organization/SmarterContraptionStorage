@@ -1,5 +1,6 @@
 package net.smartercontraptionstorage.AddStorage.ItemHandler;
 
+import com.buuz135.functionalstorage.FunctionalStorage;
 import com.buuz135.functionalstorage.block.CompactingDrawerBlock;
 import com.buuz135.functionalstorage.block.SimpleCompactingDrawerBlock;
 import com.buuz135.functionalstorage.block.tile.CompactingDrawerTile;
@@ -87,7 +88,11 @@ public class FunctionalCompactingHandlerHelper extends StorageHandlerHelper{
     }
 
     @Override
-    public void registerBlock(Consumer<Block> register) {}
+    public void registerBlock(Consumer<Block> register) {
+        register.accept(FunctionalStorage.COMPACTING_DRAWER.getLeft().get());
+        register.accept(FunctionalStorage.FRAMED_COMPACTING_DRAWER.getLeft().get());
+        register.accept(FunctionalStorage.SIMPLE_COMPACTING_DRAWER.getLeft().get());
+    }
 
     @Override
     public String getName() {

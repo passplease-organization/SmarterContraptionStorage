@@ -25,7 +25,7 @@
   "smartercontraptionstorage.ponder.use_ae.text_2": "用包层线缆的ME输出总线",
   "smartercontraptionstorage.ponder.use_ae.text_3": "用包层线缆的ME输入总线",
   "smartercontraptionstorage.ponder.use_ae.text_4": "这两个总线对于动态结构而言是至关重要的，因为他们要正确地定位到AE网络。又因为输入和输出的网络是可以不一样的，所以您需要分别设置他们俩",
-  "smartercontraptionstorage.ponder.use_ae.text_5": "接口也需要初始化，他们需要插满加速卡升级，并且用无限合成终端设置",
+  "smartercontraptionstorage.ponder.use_ae.text_5": "接口也需要初始化，他们需要插满加速卡升级，并且用无限合成终端（已经连接到AE网络，且插满能量卡）设置",
   "smartercontraptionstorage.ponder.use_ae.text_6": "再加上能量、控制器（因为无限访问点不能移动，所以可能看上去有点奇怪），你的控制器就可以连接到AE网络了",
   "smartercontraptionstorage.ponder.use_ae.text_7": "物品将会被存储在输出总线的无线合成终端所指定的AE网络中，必须指出的是，每次动态结构从AE中取出或是存入物品的行为都会消耗AE网络的能量",
   "smartercontraptionstorage.ponder.use_ae.text_8": "另外，对于用于输出的AE网络可以使用ME接口（插满混淆卡）为其设置输出白名单，从而减少电脑资源的消耗（我强烈建议这样做）",

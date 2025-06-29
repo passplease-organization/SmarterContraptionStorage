@@ -25,7 +25,7 @@
   "smartercontraptionstorage.ponder.use_ae.text_2": "Export Bus, with covered_cable",
   "smartercontraptionstorage.ponder.use_ae.text_3": "Import Bus, with covered_cable",
   "smartercontraptionstorage.ponder.use_ae.text_4": "These bus is important for contraptions to locate the proper AE Net of the world. And due to the input and output AE Net can be different, so you should set them all",
-  "smartercontraptionstorage.ponder.use_ae.text_5": "Buses also need setup, they should be all filled with Speed Card Upgrade and Wireless Crafting Terminal (have connected to AE Net)",
+  "smartercontraptionstorage.ponder.use_ae.text_5": "Buses also need setup, they should be all filled with Speed Card Upgrade and Wireless Crafting Terminal (have connected to AE Net and filled with 2 energy cards)",
   "smartercontraptionstorage.ponder.use_ae.text_6": "Adding energy, controller (due to Access Point cannot be moved, so it may be weired) so that your contraption can connect to AE Net",
   "smartercontraptionstorage.ponder.use_ae.text_7": "Items will be stored in the AE Net which is connecting to Wireless Crafting Terminal in in Export Bus. And I have to point out, each action that contraption try to insert or extract items consumes energy of AE net",
   "smartercontraptionstorage.ponder.use_ae.text_8": "One more thing, ME Interface can set the white filter for extracting AE Net (filled with Fuzzy Card), so that it costs less computer source (I really recommend to set that)",

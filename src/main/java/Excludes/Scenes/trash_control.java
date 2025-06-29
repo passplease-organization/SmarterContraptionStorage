@@ -1,11 +1,10 @@
 package Excludes.Scenes;
 
-import Excludes.CreateNBTFile;
 import net.minecraft.nbt.*;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
 
-import static Excludes.CreateNBTFile.Facing.*;
+import static Excludes.Scenes.CreateNBTFile.Facing.*;
 
 public class trash_control extends CreateNBTFile {
     public trash_control(@NotNull String name) {

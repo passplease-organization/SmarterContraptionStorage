@@ -1,14 +1,13 @@
 package Excludes.Scenes;
 
-import Excludes.CreateNBTFile;
 import appeng.core.definitions.AEBlocks;
 import com.simibubi.create.AllBlocks;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
 
-import static Excludes.CreateNBTFile.Facing.north;
-import static Excludes.CreateNBTFile.Facing.west;
+import static Excludes.Scenes.CreateNBTFile.Facing.north;
+import static Excludes.Scenes.CreateNBTFile.Facing.west;
 
 public class spatial_cell extends CreateNBTFile {
     public static final int CELL_SIZE = 4;

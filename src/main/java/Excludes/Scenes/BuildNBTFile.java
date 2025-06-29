@@ -1,6 +1,5 @@
-package Excludes;
+package Excludes.Scenes;
 
-import Excludes.Scenes.*;
 import net.smartercontraptionstorage.SmarterContraptionStorage;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;

@@ -264,5 +264,11 @@ public class SpatialHandler extends StorageHandlerHelper{
         public boolean canWork() {
             return canWork;
         }
+
+        public void setWork() {
+            if(!Thread.currentThread().getStackTrace()[2].getClassName().startsWith("Excludes.GameTest"))
+                throw new IllegalCallerException("Illegal try of setting canWork !");
+            canWork = true;
+        }
     }
 }

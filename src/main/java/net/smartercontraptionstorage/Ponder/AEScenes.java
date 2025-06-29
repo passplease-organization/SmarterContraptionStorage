@@ -52,7 +52,7 @@ public class AEScenes {
         scene.idle(110);
         scene.overlay().showControls(util.vector().topOf(importBus), Pointing.DOWN,50).withItem(AEItems.WIRELESS_CRAFTING_TERMINAL.stack());
         scene.overlay().showControls(util.vector().topOf(exportBus), Pointing.DOWN,50).withItem(AEItems.WIRELESS_CRAFTING_TERMINAL.stack());
-        scene.overlay().showText(100).pointAt(util.vector().topOf(importBus)).placeNearTarget().text("Buses also need setup, they should be all filled with Speed Card Upgrade and Wireless Crafting Terminal (have connected to AE Net)");
+        scene.overlay().showText(100).pointAt(util.vector().topOf(importBus)).placeNearTarget().text("Buses also need setup, they should be all filled with Speed Card Upgrade and Wireless Crafting Terminal (have connected to AE Net and filled with 2 energy cards)");
         scene.idle(110);
         scene.overlay().showOutline(PonderPalette.GREEN,AllItems.SUPER_GLUE,util.select().fromTo(2,1,1,3,1,3),50);
         scene.overlay().showText(100).placeNearTarget().pointAt(util.vector().centerOf(3,1,2)).text("Adding energy, controller (due to Access Point cannot be moved, so it may be wired) so that your contraption can connect to AE Net");
