@@ -18,4 +18,4 @@ If you want to download code on your computer, please change gradle version in `
 ## License
 [MIT_License](https://mit-license.org/)
 ## Thanks
-Thanks to [KAllFix](https://center.mcmod.cn/170204/) improves the code and offer me help.
+Thanks to [KAllFix](https://github.com/1luik) improves the code and offer me help.

@@ -100,7 +100,7 @@ public class AE2BusBlockHelper extends StorageHandlerHelper{
         }
     }
 
-    private static IPart[] getAllPart(CableBusBlockEntity bus){
+    public static IPart[] getAllPart(CableBusBlockEntity bus){
         IPart[] iParts = new IPart[6];
         iParts[0] = bus.getPart(Direction.NORTH);
         iParts[1] = bus.getPart(Direction.SOUTH);

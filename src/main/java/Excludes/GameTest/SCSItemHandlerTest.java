@@ -2,17 +2,23 @@ package Excludes.GameTest;
 
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.networking.IGridNode;
+import appeng.api.parts.IPart;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
+import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
 import appeng.core.definitions.AEBlocks;
+import appeng.items.tools.powered.WirelessCraftingTerminalItem;
+import appeng.items.tools.powered.WirelessTerminalItem;
+import appeng.parts.automation.IOBusPart;
 import com.buuz135.functionalstorage.FunctionalStorage;
 import com.buuz135.functionalstorage.block.tile.CompactingDrawerTile;
 import com.buuz135.functionalstorage.util.CompactingUtil;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerGroup;
 import com.jaquadro.minecraft.storagedrawers.core.ModBlockEntities;
+import com.mojang.serialization.DataResult;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.kinetics.transmission.sequencer.SequencedGearshiftBlock;
 import com.simibubi.create.infrastructure.gametest.CreateGameTestHelper;
@@ -20,12 +26,17 @@ import com.simibubi.create.infrastructure.gametest.GameTestGroup;
 import com.supermartijn642.trashcans.TrashCans;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.smartercontraptionstorage.AddStorage.ItemHandler.AE2BusBlockHelper;
 import net.smartercontraptionstorage.AddStorage.ItemHandler.SpatialHandler;
 import net.smartercontraptionstorage.SmarterContraptionStorage;
 import net.smartercontraptionstorage.SmarterContraptionStorageConfig;
@@ -52,7 +63,7 @@ public class SCSItemHandlerTest {
         helper.pressButton(button);
         helper.succeedWhen(() -> {
             if(step.get() != 4) {
-                helper.assertBlockProperty(gearshift, SequencedGearshiftBlock.STATE, 0);
+                contraptionStoped(helper,gearshift);
                 switch(step.get()) {
                     case 1 -> {
                         helper.assertContainerContains(barrel, Items.DIRT);
@@ -95,7 +106,7 @@ public class SCSItemHandlerTest {
 
         helper.pressButton(button);
         helper.succeedWhen(() -> {
-            helper.assertBlockProperty(gearshift, SequencedGearshiftBlock.STATE, 0);
+            contraptionStoped(helper,gearshift);
             Object2LongMap<Item> items = helper.getItemContent(barrel);
             if(!items.containsKey(Items.IRON_INGOT) || items.getLong(Items.IRON_INGOT) != 9)
                 helper.fail("Compacting drawer doesn't contain 9 iron ingots !");
@@ -123,7 +134,7 @@ public class SCSItemHandlerTest {
 
         helper.pressButton(button);
         helper.succeedWhen(() -> {
-            helper.assertBlockProperty(gearshift, SequencedGearshiftBlock.STATE, 0);
+            contraptionStoped(helper,gearshift);
             Object2LongMap<Item> items = helper.getItemContent(barrel);
             if(!items.containsKey(Items.IRON_INGOT) || items.getLong(Items.IRON_INGOT) != 9)
                 helper.fail("Compacting drawer doesn't contain 9 iron ingots !");
@@ -141,6 +152,7 @@ public class SCSItemHandlerTest {
         BlockPos button = new BlockPos(2,6,2);
         BlockPos gearshift = new BlockPos(2,7,2);
         BlockPos grass = new BlockPos(2,2,3);
+        GlobalPos wirelessAccessPoint = GlobalPos.of(helper.getLevel().dimension(),helper.absolutePos(new BlockPos(3, 10, 3)));
         ControllerBlockEntity controller = helper.getBlockEntity(AEBlocks.CONTROLLER.block().getBlockEntityType(), new BlockPos(4, 10, 4));
         IGridNode gridNode = controller.getGridNode();
         if(gridNode == null || !gridNode.isActive() || gridNode.getGrid() == null)
@@ -152,22 +164,41 @@ public class SCSItemHandlerTest {
         Set<AEKey> aeKeys = storage.getAvailableStacks().keySet();
         if(aeKeys.contains(dirt) || !aeKeys.contains(linerChassis) || !aeKeys.contains(controllerItem))
             helper.fail("Wrong AE net storage !");
+        BlockPos[] cables = {new BlockPos(2,7,5),new BlockPos(2,7,4)};
+        cable:
+        for(BlockPos cable : cables){
+            CableBusBlockEntity bus = helper.getBlockEntity(AEBlocks.CABLE_BUS.block().getBlockEntityType(), cable);
+            for(IPart part : AE2BusBlockHelper.getAllPart(bus)){
+                if (part instanceof IOBusPart){
+                    AEKey k = ((IOBusPart) part).getConfig().getKey(0);
+                    if (k instanceof AEItemKey key) {
+                        CompoundTag nbt = key.getTag();
+                        if(nbt != null) {
+                            GlobalPos.CODEC.encodeStart(NbtOps.INSTANCE,wirelessAccessPoint).result()
+                                    .ifPresent(tag -> nbt.put("accessPoint",tag));
+                            continue cable;
+                        }
+                    }
+                    helper.fail("Wrong cable settings");
+                }
+            }
+        }
 
         helper.pressButton(button);
         helper.succeedWhen(() -> {
-            helper.assertBlockProperty(gearshift, SequencedGearshiftBlock.STATE, 0);
+            contraptionStoped(helper,gearshift);
             if(SmarterContraptionStorageConfig.AE2Loaded()) {
                 if (!storage.getAvailableStacks().keySet().contains(dirt))
-                    helper.fail("Dirt is not stored !");
-                helper.assertBlockPresent(AllBlocks.LINEAR_CHASSIS.get(), 6, 8, 5);
-                helper.assertBlockPresent(AllBlocks.LINEAR_CHASSIS.get(), 6, 7, 5);
+                    helper.fail("Dirt was not stored !");
+                if(storage.getAvailableStacks().get(linerChassis) == 64)
+                    helper.fail("Chassis was placed ! Filter may not work !");
             }else{
                 helper.assertItemEntityPresent(Items.DIRT,grass,1);
-                helper.assertBlockNotPresent(AllBlocks.LINEAR_CHASSIS.get(), 6, 8, 5);
-                helper.assertBlockNotPresent(AllBlocks.LINEAR_CHASSIS.get(), 6, 7, 5);
+                if(storage.getAvailableStacks().get(linerChassis) != 64)
+                    helper.fail("Chassis was been placed !");
             }
-            helper.assertBlockNotPresent(AEBlocks.CONTROLLER.block(), 6, 8, 6);
-            helper.assertBlockNotPresent(AEBlocks.CONTROLLER.block(), 6, 7, 6);
+            if(storage.getAvailableStacks().get(controllerItem) != 64)
+                helper.fail("Controller was been placed !");
         });
     }
 
@@ -190,7 +221,7 @@ public class SCSItemHandlerTest {
                 }
                 helper.pressButton(button);
                 helper.succeedWhen(() -> {
-                    helper.assertBlockProperty(gearshift, SequencedGearshiftBlock.STATE, 0);
+                    contraptionStoped(helper,gearshift);
                     boolean hasDirt = false;
                     for (int slot = 0; slot < handlerHelper.getSlots(); slot++) {
                         if(handlerHelper.getStackInSlot(slot).is(Items.DIRT)) {
@@ -225,8 +256,12 @@ public class SCSItemHandlerTest {
 
         helper.pressButton(button);
         helper.succeedWhen(() -> {
-            helper.assertBlockProperty(gearshift, SequencedGearshiftBlock.STATE, 0);
+            contraptionStoped(helper,gearshift);
             helper.assertContainerContains(barrel, Items.DIRT);
         });
+    }
+
+    public static void contraptionStoped(CreateGameTestHelper helper,BlockPos gearshift){
+        helper.assertBlockProperty(gearshift, SequencedGearshiftBlock.STATE, 0);
     }
 }
